@@ -1,0 +1,720 @@
+{
+  "$schema": "http://json.schemastore.org/sarif-2.1.0",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Dependency Analysis",
+          "semanticVersion": "0.3.246501",
+          "informationUri": "https://docs.microsoft.com/en-us/dotnet/core/porting/upgrade-assistant-overview",
+          "rules": [
+            {
+              "id": "UA101",
+              "fullDescription": {
+                "text": "Dependency Analysis"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Reference to System.ServiceModel needs to be deleted "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Reference to System.Web.Entity needs to be deleted "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Reference to System.Web.ApplicationServices needs to be deleted "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Reference to System.Web needs to be deleted "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Reference to System.Web.Abstractions needs to be deleted "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Reference to System.Web.Routing needs to be deleted "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Reference to System.Configuration needs to be deleted "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Reference to System.Net.Http.WebRequest needs to be deleted "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Reference to System.Web.Helpers needs to be deleted "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Reference to System.Web.Mvc needs to be deleted "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Reference to System.Web.Optimization needs to be deleted "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Reference to System.Web.Razor needs to be deleted "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Reference to System.Web.WebPages needs to be deleted "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Reference to System.Web.WebPages.Deployment needs to be deleted "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Reference to System.Web.WebPages.Razor needs to be deleted "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Package System.ServiceModel.Primitives, Version=4.8.1 needs to be added "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Package System.ServiceModel.Http, Version=4.8.1 needs to be added "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Package System.ServiceModel.Duplex, Version=4.8.1 needs to be added "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Package System.ServiceModel.NetTcp, Version=4.8.1 needs to be added "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Package System.ServiceModel.Security, Version=4.8.1 needs to be added "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Package System.ServiceModel.Federation, Version=4.8.1 needs to be added "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Package System.Configuration.ConfigurationManager, Version=5.0.0 needs to be added "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Package System.Net.Http, Version=4.3.0 needs to be added "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Package Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.3.246501 needs to be added "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Package Microsoft.Windows.Compatibility, Version=5.0.2 needs to be added "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA101",
+          "message": {
+            "text": "Framework Reference to Microsoft.AspNetCore.App needs to be added "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        }
+      ],
+      "columnKind": "utf16CodeUnits"
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "API Upgradability",
+          "semanticVersion": "0.3.246501",
+          "informationUri": "https://docs.microsoft.com/en-us/dotnet/core/porting/upgrade-assistant-overview",
+          "rules": [
+            {
+              "id": "UA0002",
+              "fullDescription": {
+                "text": "Types should be upgraded"
+              }
+            },
+            {
+              "id": "UA0013_C",
+              "fullDescription": {
+                "text": "Replace usage of System.Web.Optimization.BundleCollection"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "UA0002",
+          "message": {
+            "text": "This type is not supported on .NET Core/.NET 5+ and should be replaced with a modern equivalent."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/Controllers/HomeController.cs"
+                },
+                "region": {
+                  "startLine": 9
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA0002",
+          "message": {
+            "text": "This type is not supported on .NET Core/.NET 5+ and should be replaced with a modern equivalent."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/Controllers/HomeController.cs"
+                },
+                "region": {
+                  "startLine": 11
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA0002",
+          "message": {
+            "text": "This type is not supported on .NET Core/.NET 5+ and should be replaced with a modern equivalent."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CacheService/CacheFilter.cs"
+                },
+                "region": {
+                  "startLine": 10
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA0002",
+          "message": {
+            "text": "This type is not supported on .NET Core/.NET 5+ and should be replaced with a modern equivalent."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/Controllers/ItemsController.cs"
+                },
+                "region": {
+                  "startLine": 23
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA0002",
+          "message": {
+            "text": "This type is not supported on .NET Core/.NET 5+ and should be replaced with a modern equivalent."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/Controllers/CartItemsController.cs"
+                },
+                "region": {
+                  "startLine": 17
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA0002",
+          "message": {
+            "text": "This type is not supported on .NET Core/.NET 5+ and should be replaced with a modern equivalent."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/Controllers/RegisterUsersController.cs"
+                },
+                "region": {
+                  "startLine": 17
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA0002",
+          "message": {
+            "text": "This type is not supported on .NET Core/.NET 5+ and should be replaced with a modern equivalent."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/Areas/HelpPage/Controllers/HelpController.cs"
+                },
+                "region": {
+                  "startLine": 12
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA0002",
+          "message": {
+            "text": "This type is not supported on .NET Core/.NET 5+ and should be replaced with a modern equivalent."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/Areas/HelpPage/Controllers/HelpController.cs"
+                },
+                "region": {
+                  "startLine": 28
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA0002",
+          "message": {
+            "text": "This type is not supported on .NET Core/.NET 5+ and should be replaced with a modern equivalent."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/Areas/HelpPage/Controllers/HelpController.cs"
+                },
+                "region": {
+                  "startLine": 34
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA0002",
+          "message": {
+            "text": "This type is not supported on .NET Core/.NET 5+ and should be replaced with a modern equivalent."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/Areas/HelpPage/Controllers/HelpController.cs"
+                },
+                "region": {
+                  "startLine": 48
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA0002",
+          "message": {
+            "text": "This type is not supported on .NET Core/.NET 5+ and should be replaced with a modern equivalent."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/Controllers/CategoriesController.cs"
+                },
+                "region": {
+                  "startLine": 21
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA0013_C",
+          "message": {
+            "text": "Script and style bundling works differently in ASP.NET Core. BundleCollection should be replaced by alternative bundling technologies. https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/App_Start/BundleConfig.cs"
+                },
+                "region": {
+                  "startLine": 9
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "columnKind": "utf16CodeUnits"
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "Component Analysis",
+          "semanticVersion": "0.3.246501",
+          "informationUri": "https://docs.microsoft.com/en-us/dotnet/core/porting/upgrade-assistant-overview",
+          "rules": [
+            {
+              "id": "UA102",
+              "fullDescription": {
+                "text": "Component Analysis"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "UA102",
+          "message": {
+            "text": "Default font in Windows Forms has been changed from Microsoft Sans Serif to Seg Segoe UI, in order to change the default font use the API - Application.SetDefaultFont(Font font). For more details see here - https://devblogs.microsoft.com/dotnet/whats-new-in-windows-forms-in-net-6-0-preview-5/#application-wide-default-font"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Nagul/OneDrive%20-%20CES%20Limited/Documents/Training_Projects/WebAPI/CategoryApi/CategoryApi/CategoryApi.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        }
+      ],
+      "columnKind": "utf16CodeUnits"
+    }
+  ]
+}

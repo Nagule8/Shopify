@@ -1,121 +1,155 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.Http.Description;
-using CategoryApi.Data;
-using CategoryApi.Models;
+using ShopApi.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using ShopApi.Interface;
+using ShopApi.Authorize;
+using ShopApi.Entity;
 
-namespace CategoryApi.Controllers
+namespace ShopApi.Controllers
 {
-    public class CartItemsController : ApiController
+    [Route("api/[controller]")]
+    [ApiController]
+    [Authorize(new[] { Role.SuperSu, Role.Administrator })]
+    public class CartItemsController : ControllerBase
     {
-        private CategoryApiContext db = new CategoryApiContext();
+        private readonly ICommonRepository<CartItem> commonRepository;
+        private readonly ICartItemRepository cartItemRepository;
+        private readonly IJwtUtils jwtUtils;
+        public CartItemsController(ICommonRepository<CartItem> commonRepository,ICartItemRepository cartItemRepository, IJwtUtils jwtUtils)
+        {
+            this.commonRepository = commonRepository;
+            this.cartItemRepository = cartItemRepository;
+            this.jwtUtils = jwtUtils;
+        }
 
         // GET: api/CartItems
-        public async Task<IHttpActionResult> GetCartItems()
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<ActionResult> GetCartItems()
         {
-            var cart = db.CartItems.OrderByDescending(x => x.Id);
-            return Ok(await cart.ToListAsync());
+            try
+            {
+                var jwt = Request.Cookies["jwt"];
+                var userId = jwtUtils.ValidateJwtToken(jwt);
+
+                return Ok(await cartItemRepository.GetCartItems((int)userId));
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from database.");
+            }
         }
 
         // GET: api/CartItems/5
-        [ResponseType(typeof(CartItem))]
-        public async Task<IHttpActionResult> GetCartItem(int id)
+        [HttpGet("{id:int}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<CartItem>> GetCartItem(int id)
         {
-            CartItem cartItem = await db.CartItems.FindAsync(id);
-            if (cartItem == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(cartItem);
-        }
-
-        // PUT: api/CartItems/5
-        [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutCartItem(int id, CartItem cartItem)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != cartItem.Id)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(cartItem).State = EntityState.Modified;
-
             try
             {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CartItemExists(id))
+                CartItem cartItem = await commonRepository.GetSpecific(id);
+                if (cartItem == null)
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
-            }
 
-            return StatusCode(HttpStatusCode.NoContent);
+                return Ok(cartItem);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from database.");
+            }
+        }
+
+        // PUT: api/CartItems/5
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<CartItem>> PutCartItem(int id, CartItem cartItem)
+        {
+            try
+            {
+                if (cartItem.Id != id)
+                {
+                    return BadRequest("Cart Item Id mismatch!.");
+                }
+                var itemToUpdate = await commonRepository.GetSpecific(id);
+                if (itemToUpdate == null)
+                {
+                    return NotFound($"Cart Item with id:{id} not found");
+                }
+                return await commonRepository.Update(cartItem);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Updating Cart item.");
+            }
+        }
+
+        //PUT Increase Quantity
+        [HttpPut("Increase/{id:int}")]
+        public async Task<ActionResult<CartItem>> PUTIncreaseQuantity(int id,int quantity)
+        {
+            var cartItem =await commonRepository.GetSpecific(id);
+
+            try
+            {
+                return await cartItemRepository.IncreaseQuantity(id, quantity);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Increasing Quantity."); ;
+            }
         }
 
         // POST: api/CartItems
-        [ResponseType(typeof(CartItem))]
-        public async Task<IHttpActionResult> PostCartItem(CartItem cartItem)
+        [HttpPost]
+        public async Task<ActionResult<CartItem>> PostCartItem(CartItem cartItem)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                if (cartItem == null)
+                {
+                    return BadRequest();
+                }
+                var item1 = await cartItemRepository.GetCartItemByItemId(cartItem.ItemId);
+                if (item1 != null)
+                {
+                    ModelState.AddModelError("Cart", "Item already exist.");
+                    return BadRequest(ModelState);
+                }
+                var newitem = await commonRepository.Add(cartItem);
+
+
+                return CreatedAtAction(nameof(GetCartItem),
+                    new { id = newitem.Id }, newitem);
             }
-
-            db.CartItems.Add(cartItem);
-            await db.SaveChangesAsync();
-
-            return CreatedAtRoute("DefaultApi", new { id = cartItem.Id }, cartItem);
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Adding new item to cart.");
+            }
         }
 
         // DELETE: api/CartItems/5
-        [ResponseType(typeof(CartItem))]
-        public async Task<IHttpActionResult> DeleteCartItem(int id)
+        [HttpDelete]
+        public async Task<ActionResult<Item>> DeleteCartItem(int id)
         {
-            CartItem cartItem = await db.CartItems.FindAsync(id);
-            if (cartItem == null)
+            try
             {
-                return NotFound();
+                CartItem cartItem = await commonRepository.GetSpecific(id);
+                if (cartItem == null)
+                {
+                    return NotFound($"Cart item with id:{id} not found.");
+                }
+
+                await commonRepository.Delete(id);
+
+                return Ok($"Cart Item with id:{id} Deleted.");
             }
-
-            db.CartItems.Remove(cartItem);
-            await db.SaveChangesAsync();
-
-            return Ok(cartItem);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
+            catch (Exception)
             {
-                db.Dispose();
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Deleting Cart Item.");
             }
-            base.Dispose(disposing);
-        }
-
-        private bool CartItemExists(int id)
-        {
-            return db.CartItems.Count(e => e.Id == id) > 0;
         }
     }
 }

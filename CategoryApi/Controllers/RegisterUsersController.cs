@@ -1,120 +1,218 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.Http.Description;
-using CategoryApi.Data;
-using CategoryApi.Models;
+using ShopApi.Dtos;
+using ShopApi.Interface;
+using ShopApi.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using ShopApi.Authorize;
+using ShopApi.Entity;
 
-namespace CategoryApi.Controllers
+namespace ShopApi.Controllers
 {
-    public class RegisterUsersController : ApiController
+    //[Authorize(Role.SuperSu)]
+    [Route("api/[controller]")]
+    [ApiController]
+    public class RegisterUsersController : ControllerBase
     {
-        private CategoryApiContext db = new CategoryApiContext();
+        private readonly ICommonRepository<RegisterUser> commonRepository;
+        private readonly IUserRepository userRepository;
+        private readonly IJwtUtils jwtUtils;
+
+        public RegisterUsersController(ICommonRepository<RegisterUser> commonRepository, IUserRepository userRepository, IJwtUtils jwtUtils)
+        {
+            this.commonRepository = commonRepository;
+            this.userRepository = userRepository;
+            this.jwtUtils = jwtUtils;
+        }
 
         // GET: api/RegisterUsers
-        public IQueryable<RegisterUser> GetRegisterUsers()
+        [HttpGet]
+        public async Task<ActionResult> GetRegisterUsers()
         {
-            return db.RegisterUsers;
+            try
+            {
+                return Ok(await commonRepository.Get());
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,"Error retrieving data from database.");
+            }
         }
 
         // GET: api/RegisterUsers/5
-        [ResponseType(typeof(RegisterUser))]
-        public async Task<IHttpActionResult> GetRegisterUser(int id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<RegisterUser>> GetRegisterUser(int id)
         {
-            RegisterUser registerUser = await db.RegisterUsers.FindAsync(id);
-            if (registerUser == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(registerUser);
-        }
-
-        // PUT: api/RegisterUsers/5
-        [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutRegisterUser(int id, RegisterUser registerUser)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != registerUser.Id)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(registerUser).State = EntityState.Modified;
-
             try
             {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!RegisterUserExists(id))
+                RegisterUser registerUser = await commonRepository.GetSpecific(id);
+                if (registerUser == null)
                 {
                     return NotFound();
                 }
-                else
+
+                return Ok(registerUser);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from database.");
+            }
+        }
+
+        // PUT: api/RegisterUsers/5
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<RegisterUser>> PutRegisterUser(int id, RegisterUser registerUser)
+        {
+            try
+            {
+                if (registerUser.Id != id)
                 {
-                    throw;
+                    return BadRequest("User Id mismatch!.");
                 }
+                var userToUpdate = await commonRepository.GetSpecific(id);
+                if (userToUpdate == null)
+                {
+                    return NotFound($"User with id:{id} not found");
+                }
+                return await commonRepository.Update(registerUser);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Updating User.");
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
         }
 
         // POST: api/RegisterUsers
-        [ResponseType(typeof(RegisterUser))]
-        public async Task<IHttpActionResult> PostRegisterUser(RegisterUser registerUser)
+        [HttpPost]
+        public async Task<ActionResult<RegisterUser>> PostRegisterUser(RegisterUser registerUser)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                if(registerUser == null)
+                {
+                    return BadRequest();
+                }
+                var user = await userRepository.GetUserByName(registerUser.UserName);
+                if(user != null)
+                {
+                    ModelState.AddModelError("Email","User already exist.");
+                    return BadRequest(ModelState);
+                }
+                var newUser = await commonRepository.Add(registerUser);
+
+
+                return CreatedAtAction(nameof(GetRegisterUser),
+                    new { id = newUser.Id },newUser);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error creating new User.");
             }
 
-            db.RegisterUsers.Add(registerUser);
-            await db.SaveChangesAsync();
-
-            return CreatedAtRoute("DefaultApi", new { id = registerUser.Id }, registerUser);
         }
 
         // DELETE: api/RegisterUsers/5
-        [ResponseType(typeof(RegisterUser))]
-        public async Task<IHttpActionResult> DeleteRegisterUser(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> DeleteRegisterUser(int id)
         {
-            RegisterUser registerUser = await db.RegisterUsers.FindAsync(id);
-            if (registerUser == null)
+            try
             {
-                return NotFound();
+                RegisterUser registerUser = await commonRepository.GetSpecific(id);
+                if (registerUser == null)
+                {
+                    return NotFound($"User with id:{id} not found.");
+                }
+
+                await commonRepository.Delete(id);
+
+                return Ok($"User with id:{id} Deleted.");
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Deleting User.");
             }
 
-            db.RegisterUsers.Remove(registerUser);
-            await db.SaveChangesAsync();
-
-            return Ok(registerUser);
         }
 
-        protected override void Dispose(bool disposing)
+        //User Id
+        [HttpGet("{username}")]
+        //[Route("api/registeruser/GetUserId")]
+        public async Task<ActionResult<int>> GetUserId(string username)
         {
-            if (disposing)
+            try
             {
-                db.Dispose();
+                var res = await userRepository.GetUserId(username);
+                if (res == 0)
+                {
+                    return NotFound();
+                }
+
+                return Ok(res);
             }
-            base.Dispose(disposing);
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from database.");
+            }
         }
 
-        private bool RegisterUserExists(int id)
+        //POST: Login
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(LoginDto login)
         {
-            return db.RegisterUsers.Count(e => e.Id == id) > 0;
+            var user = await userRepository.GetUserByName(login.Name);
+
+            if (user == null || !BCrypt.Net.BCrypt.Verify(login.Password, user.Password))
+            {
+                return BadRequest("Invalid Credentials");
+            }
+
+            var jwt = jwtUtils.GenerateJwtToken(user); 
+
+            Response.Cookies.Append("jwt", jwt, new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.None,
+                Secure = true
+            });
+
+            return Ok(new { message = "Success." });
+        }
+
+        //GET: Authenticated User
+        [HttpGet("User")]
+        public async Task<IActionResult> User()
+        {
+            try
+            {
+                var jwt = Request.Cookies["jwt"];
+                var userId = jwtUtils.ValidateJwtToken(jwt);
+
+                var user = await commonRepository.GetSpecific((int)userId);
+
+                return Ok(user);
+            }
+            catch (Exception)
+            {
+                return Unauthorized();
+            }
+        }
+
+        //POST: Logout User
+        [HttpPost("LogOut")]
+        public IActionResult LogOut()
+        {
+            Response.Cookies.Delete("jwt", new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.None,
+                Secure = true
+            });
+
+            return Ok(new {
+                message = "Successfully logged out!."
+            });
         }
     }
 }

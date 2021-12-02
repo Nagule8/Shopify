@@ -1,112 +1,131 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.Http.Description;
-using CategoryApi.Data;
-using CategoryApi.Models;
+using ShopApi.Interface;
+using ShopApi.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using ShopApi.Authorize;
+using ShopApi.Entity;
 
-namespace CategoryApi.Controllers
+namespace ShopApi.Controllers
 {
-    public class CategoriesController : ApiController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CategoriesController : ControllerBase
     {
-        private CategoryApiContext db = new CategoryApiContext();
+        private readonly ICommonRepository<Category> commonRepository;
+        private readonly ICategoryRepository categoryRepository;
+
+        public CategoriesController(ICommonRepository<Category> commonRepository,ICategoryRepository categoryRepository)
+        {
+            this.commonRepository = commonRepository;
+            this.categoryRepository = categoryRepository;
+        }
 
         // GET: api/Categories
-        public IQueryable<Category> GetCategories()
+        [HttpGet]
+        public async Task<ActionResult> GetCategories()
         {
-            return db.Categories;
+            try
+            {
+                return Ok(await commonRepository.Get());
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from database.");
+            }
         }
 
         // GET: api/Categories/5
-        [ResponseType(typeof(Category))]
-        public async Task<IHttpActionResult> GetCategory(int id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Category>> GetCategory(int id)
         {
-            Category category = await db.Categories.FindAsync(id);
-            if (category == null)
+            try
             {
-                return NotFound();
-            }
-
-            return Ok(category);
-        }
-
-        // PUT: api/Categories/5
-        [ResponseType(typeof(Category))]
-        public async Task<IHttpActionResult> PutCategory(int id, Category category)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest("Not a valid data");
-
-            using (var ctx = new CategoryApiContext())
-            {
-                var existingCategory = ctx.Categories.Where(s => s.Id == category.Id).FirstOrDefault<Category>();
-
-                if (existingCategory != null)
-                {
-                    existingCategory.Name = category.Name;
-                    existingCategory.Slug = category.Slug;
-                    existingCategory.Sorting = category.Sorting;
-
-                    await ctx.SaveChangesAsync();
-                }
-                else
+                Category category = await commonRepository.GetSpecific(id);
+                if (category == null)
                 {
                     return NotFound();
                 }
+
+                return Ok(category);
             }
-            return Ok();
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from database.");
+            }
+        }
+
+        // PUT: api/Categories/5
+        [HttpPut("{id:int}")]
+        [Authorize(new[] { Role.SuperSu, Role.Administrator })]
+        public async Task<ActionResult<Category>> PutCategory(int id, Category category)
+        {
+            try
+            {
+
+                var categoryToUpdate = await commonRepository.GetSpecific(id);
+
+                return await commonRepository.Update(category);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Updating User/Unauthorized access.");
+            }
         }
 
         // POST: api/Categories
-        [ResponseType(typeof(Category))]
-        public async Task<IHttpActionResult> PostCategory(Category category)
+        [HttpPost]
+        [Authorize(new[] { Role.SuperSu, Role.Administrator })]
+        public async Task<ActionResult<Category>> PostCategory(Category category)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+
+                if (category == null)
+                {
+                    return BadRequest();
+                }
+
+                var cate = await categoryRepository.GetCategoryByName(category.Name);
+                if (cate != null)
+                {
+                    ModelState.AddModelError("category", "Category already exist.");
+                    return BadRequest(ModelState);
+                }
+                var newCategory = await commonRepository.Add(category);
+
+                return CreatedAtAction(nameof(GetCategory),
+                    new { id = newCategory.Id }, newCategory);
             }
 
-            db.Categories.Add(category);
-            await db.SaveChangesAsync();
-
-            return CreatedAtRoute("DefaultApi", new { id = category.Id }, category);
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error creating new Category/ Unauthorized Access.");
+            }
         }
 
         // DELETE: api/Categories/5
-        [ResponseType(typeof(Category))]
-        public async Task<IHttpActionResult> DeleteCategory(int id)
+        [HttpDelete("{id:int}")]
+        [Authorize(new[] { Role.SuperSu, Role.Administrator })]
+        public async Task<ActionResult<Category>> DeleteCategory(int id)
         {
-            Category category = await db.Categories.FindAsync(id);
-            if (category == null)
+            try
             {
-                return NotFound();
+                Category category = await commonRepository.GetSpecific(id);
+                if (category == null)
+                {
+                    return NotFound($"User with id:{id} not found.");
+                }
+
+                await commonRepository.Delete(id);
+
+                return Ok($"User with id:{id} Deleted.");
             }
-
-            db.Categories.Remove(category);
-            await db.SaveChangesAsync();
-
-            return Ok(category);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
+            catch (Exception)
             {
-                db.Dispose();
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Deleting Category.");
             }
-            base.Dispose(disposing);
-        }
-
-        private bool CategoryExists(int id)
-        {
-            return db.Categories.Count(e => e.Id == id) > 0;
         }
     }
 }

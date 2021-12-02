@@ -1,32 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
-using System.Data.Entity.ModelConfiguration.Conventions;
-using CategoryApi.Models;
+﻿using ShopApi.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace CategoryApi.Data
+namespace ShopApi.Data
 {
     public class CategoryApiContext : DbContext
     {
-        public CategoryApiContext() : base("CategoryApiContext")
+        public CategoryApiContext(DbContextOptions options) : base(options)
         {
-            this.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
-        }
 
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<RegisterUser>()
+                .Property(u => u.Role)
+                .HasConversion<string>()
+                .HasMaxLength(50);
+        }
         public DbSet<Category> Categories { get; set; }
-        public System.Data.Entity.DbSet<CategoryApi.Models.Item> Items { get; set; }
-
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
-        }
-
-        public System.Data.Entity.DbSet<CategoryApi.Models.CartItem> CartItems { get; set; }
-
-        public System.Data.Entity.DbSet<CategoryApi.Models.User> Users { get; set; }
-
-        public System.Data.Entity.DbSet<CategoryApi.Models.RegisterUser> RegisterUsers { get; set; }
+        public DbSet<Item> Items { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<RegisterUser> RegisterUsers { get; set; }
     }
 }

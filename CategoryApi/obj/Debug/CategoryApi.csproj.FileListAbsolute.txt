@@ -315,3 +315,13 @@ C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\CategoryAPI\C
 C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\CategoryAPI\CategoryApi\bin\System.Web.Http.Owin.dll
 C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\CategoryAPI\CategoryApi\bin\Microsoft.Owin.xml
 C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\CategoryAPI\CategoryApi\bin\System.Web.Http.Owin.xml
+C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\CategoryAPI\CategoryApi\obj\Debug\CategoryApi.Migrations.emailRegister.resources
+C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\CategoryAPI\CategoryApi\obj\Debug\CategoryApi.Migrations.ValidationMigraiton.resources
+C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\CategoryApi\CategoryApi\obj\Debug\CategoryApi.Migrations.Something.resources
+C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\CategoryAPI\CategoryApi\obj\Debug\CategoryApi.Migrations.UserBasedCart.resources
+C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\CategoryAPI\CategoryApi\bin\Microsoft.Extensions.Caching.SqlServer.dll
+C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\CategoryAPI\CategoryApi\bin\System.Text.Json.dll
+C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\CategoryAPI\CategoryApi\bin\System.ValueTuple.dll
+C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\CategoryAPI\CategoryApi\bin\Microsoft.Extensions.Caching.SqlServer.xml
+C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\CategoryAPI\CategoryApi\bin\System.Text.Json.xml
+C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\CategoryAPI\CategoryApi\bin\System.ValueTuple.xml

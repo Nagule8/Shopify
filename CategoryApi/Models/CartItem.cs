@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace CategoryApi.Models
+﻿
+namespace ShopApi.Models
 {
     public class CartItem
     {
@@ -14,7 +10,9 @@ namespace CategoryApi.Models
         public decimal Price { get; set; }
         public decimal Total { get { return Quantity * Price; } }
         public string ImageName { get; set; }
-        
+        public int RegisterUserId { get; set; }
+        public virtual RegisterUser RegisterUser { get; set; }
+
         public CartItem()
         {
 

@@ -1,132 +1,150 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
-using System.Web.Http;
-using System.Web.Http.Description;
-using CategoryApi.Data;
-using CategoryApi.Models;
-using CategoryApi.Services;
-using Microsoft.AspNetCore.Hosting;
+using ShopApi.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using ShopApi.Interface;
+using Microsoft.Extensions.Caching.Distributed;
+using System.IO;
+using ShopApi.Authorize;
+using ShopApi.Entity;
 
-namespace CategoryApi.Controllers
+namespace ShopApi.Controllers
 {
-    public class ItemsController : ApiController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ItemsController : ControllerBase
     {
-        private CategoryApiContext db = new CategoryApiContext();
+        private readonly ICommonRepository<Item> commonRepository;
+        private readonly IItemRepository itemRepository;
+        private readonly IDistributedCache _cache;
 
-        [BasicAuthentication]
-        // GET: api/Items
-        public async Task<IHttpActionResult> GetItems()
+        public ItemsController(ICommonRepository<Item> commonRepository, IItemRepository itemRepository, IDistributedCache cache)
         {
-            string username = Thread.CurrentPrincipal.Identity.Name;
+            this.commonRepository = commonRepository;
+            this.itemRepository = itemRepository;
+            _cache = cache;
+        }
 
-            RegisterUser registerUser = db.RegisterUsers.FirstOrDefault(x=>x.UserName == username);
-            var item = db.Items.OrderByDescending(x => x.Id);
-            if(registerUser.Role == "Administrator")
+        // GET: api/Items
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<ActionResult> GetItems()
+        {
+            try
             {
-                return Ok(await item.ToListAsync());
+                var result = await commonRepository.Get();
+
+                return Ok(result);
+
             }
-            return NotFound();
-            
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from database.");
+            }
+
         }
 
         // GET: api/Items/5
-        [ResponseType(typeof(Item))]
-        public async Task<IHttpActionResult> GetItem(int id)
+        [HttpGet("{id:int}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<Item>> GetItem(int id)
         {
-            Item item= await db.Items.FirstOrDefaultAsync(x => x.Id == id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(item);
-        }
-
-        // PUT: api/Items/5
-        [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutItem(int id, Item item)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != item.Id)
-            {
-                return BadRequest();
-            }
-            db.Entry(item).State = EntityState.Modified;
-
             try
             {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ItemExists(id))
+                Item item = await commonRepository.GetSpecific(id);
+                if (item == null)
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
-            }
 
-            return StatusCode(HttpStatusCode.NoContent);
+                return Ok(item);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from database.");
+            }
+        }
+
+        // PUT: api/Items/5
+        [HttpPut("{id:int}")]
+        [Authorize(new[] { Role.SuperSu, Role.Administrator })]
+        public async Task<ActionResult<Item>> PutItem(int id, Item item)
+        {
+            try
+            {
+                var itemToUpdate = await commonRepository.GetSpecific(id);
+                if (itemToUpdate == null)
+                {
+                    return NotFound($"Item with id:{id} not found");
+                }
+                return await commonRepository.Update(item);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Updating User/UnAuthorized access.");
+            }
         }
 
         // POST: api/Items
-        [ResponseType(typeof(Item))]
-        public async Task<IHttpActionResult> PostItem(Item item)
+        [HttpPost]
+        [Authorize(new[] { Role.SuperSu, Role.Administrator })]
+        public async Task<ActionResult<Item>> PostItem(Item item)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+
+                var item1 = await itemRepository.GetItemBySlug(item.Name);
+                if (item1 != null)
+                {
+                    ModelState.AddModelError("Email", "User already exist.");
+                    return BadRequest(ModelState);
+                }
+                var newitem = await commonRepository.Add(item);
+
+
+                return CreatedAtAction(nameof(GetItem),
+                    new { id = newitem.Id }, newitem);
             }
-
-            db.Items.Add(item);
-            await db.SaveChangesAsync();
-
-            return CreatedAtRoute("DefaultApi", new { id = item.Id }, item);
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error creating new User/UnAuthorized access.");
+            }
         }
 
         // DELETE: api/Items/5
-        [ResponseType(typeof(Item))]
-        public async Task<IHttpActionResult> DeleteItem(int id)
+        [HttpDelete]
+        [Authorize(new[] { Role.SuperSu, Role.Administrator })]
+        public async Task<ActionResult<Item>> DeleteItem(int id)
         {
-            Item item = await db.Items.FindAsync(id);
-            if (item == null)
+            try
             {
-                return NotFound();
+                Item item = await commonRepository.GetSpecific(id);
+                if (item == null)
+                {
+                    return NotFound($"User with id:{id} not found.");
+                }
+
+                await commonRepository.Delete(id);
+
+                return Ok($"Item with id:{id} Deleted.");
             }
-
-            db.Items.Remove(item);
-            await db.SaveChangesAsync();
-
-            return Ok(item);
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Deleting Item.");
+            }
         }
 
-        //Save Image
+        /*//Save Image
         [Route("api/items/SaveFile")]
         public string SaveFile()
         {
             try
             {
-                var httpRequest = HttpContext.Current.Request;
+                var httpRequest = HttpContextHelper.Current.Request;
                 var uploadedFile = httpRequest.Files[0];
                 string fileName = uploadedFile.FileName;
-                var physicalPath = HttpContext.Current.Server.MapPath("~/Photos/"+fileName);
+                var physicalPath = HttpContextHelper.Current.Server.MapPath("~/Photos/"+fileName);
 
                 uploadedFile.SaveAs(physicalPath);
 
@@ -136,20 +154,6 @@ namespace CategoryApi.Controllers
             {
                 return("noimage.png");
             }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private bool ItemExists(int id)
-        {
-            return db.Items.Count(e => e.Id == id) > 0;
-        }
+        }*/
     }
 }

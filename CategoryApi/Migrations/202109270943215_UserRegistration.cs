@@ -1,4 +1,4 @@
-namespace CategoryApi.Migrations
+namespace ShopApi.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;
