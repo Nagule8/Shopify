@@ -8,6 +8,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using System.IO;
 using ShopApi.Authorize;
 using ShopApi.Entity;
+using Microsoft.Extensions.Logging;
 
 namespace ShopApi.Controllers
 {

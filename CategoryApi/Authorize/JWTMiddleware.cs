@@ -28,6 +28,8 @@ namespace ShopApi.Authorize
             if (userId != null)
             {
                 var res = await commonRepository.GetSpecific(userId.Value);
+                context.Items["UserId"] = res.Id;
+                context.Items["Username"] = res.UserName;
                 context.Items["LoginDto"] = res;
             }
              await _next(context);

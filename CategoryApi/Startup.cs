@@ -17,6 +17,7 @@ using Microsoft.Extensions.Hosting;
 using ShopApi.Authorize;
 using ShopApi.Data;
 using System.Text.Json.Serialization;
+using Serilog;
 
 namespace ShopApi
 {
@@ -37,6 +38,12 @@ namespace ShopApi
                 // serialize enums as strings in api responses (e.g. Role)
                 x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
+
+            /**services.AddControllers(options =>
+            {
+                options.Filters.Add<CustomExceptionFiler>();
+            });**/
+
             services.AddCors();
 
             //configure DI for application services
@@ -53,8 +60,8 @@ namespace ShopApi
             services.AddScoped<ICategoryRepository,CategoryRepository>();
             services.AddScoped<IItemRepository,ItemRepository>();
             services.AddScoped<ICartItemRepository,CartItemRepository>();
-            //old JWT
-            //services.AddScoped<JWTService>();
+
+            services.AddScoped<UserTracker>();
 
             services.AddDbContext<CategoryApiContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("Database")));
@@ -62,6 +69,8 @@ namespace ShopApi
             // configure strongly typed settings object
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
+            //configure HttpContextAccessor 
+            services.AddHttpContextAccessor();
 
             services.AddDistributedMemoryCache();
 
@@ -80,6 +89,8 @@ namespace ShopApi
                 FileProvider = new PhysicalFileProvider(ConfigurationPath.Combine(env.WebRootPath + "\\Photos\\")),
                 RequestPath = "/Photos"
             }) ;
+
+            app.UseSerilogRequestLogging();
             app.UseRouting();
 
             app.UseCors(options => options
@@ -91,11 +102,10 @@ namespace ShopApi
 
             //Global error handler
             app.UseMiddleware<ErrorHandlerMiddleware>();
-
             //Custom jwt auth middleware
             app.UseMiddleware<JWTMiddleware>();
-
             app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

@@ -6,11 +6,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShopApi.Authorize;
 using ShopApi.Entity;
+using ShopApi.Helpers;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace ShopApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(UserTracker))]
     public class CategoriesController : ControllerBase
     {
         private readonly ICommonRepository<Category> commonRepository;
@@ -38,40 +42,27 @@ namespace ShopApi.Controllers
 
         // GET: api/Categories/5
         [HttpGet("{id:int}")]
+        
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
-            try
-            {
                 Category category = await commonRepository.GetSpecific(id);
-                if (category == null)
+                if(category == null)
                 {
-                    return NotFound();
+                throw new KeyNotFoundException();
                 }
-
                 return Ok(category);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from database.");
-            }
         }
 
         // PUT: api/Categories/5
         [HttpPut("{id:int}")]
         [Authorize(new[] { Role.SuperSu, Role.Administrator })]
+        //[CustomExceptionFiler]
         public async Task<ActionResult<Category>> PutCategory(int id, Category category)
         {
-            try
-            {
 
                 var categoryToUpdate = await commonRepository.GetSpecific(id);
 
                 return await commonRepository.Update(category);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error Updating User/Unauthorized access.");
-            }
         }
 
         // POST: api/Categories
@@ -99,7 +90,7 @@ namespace ShopApi.Controllers
                     new { id = newCategory.Id }, newCategory);
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error creating new Category/ Unauthorized Access.");
             }
