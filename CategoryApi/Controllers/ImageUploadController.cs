@@ -9,11 +9,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using ShopApi.Authorize;
 using ShopApi.Entity;
+using ShopApi.Helpers;
 
 namespace ShopApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(UserTracker))]
     public class ImageUploadController : ControllerBase
     {
         private static IWebHostEnvironment _webHostEnvironment;

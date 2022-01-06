@@ -64,7 +64,7 @@ namespace ShopApi
             services.AddScoped<UserTracker>();
 
             services.AddDbContext<CategoryApiContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("Database")));
+            options.UseSqlServer(Configuration.GetConnectionString("DockerDb")));
 
             // configure strongly typed settings object
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));

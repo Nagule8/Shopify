@@ -11,7 +11,7 @@ using System.Linq;
 namespace ShopApi.Authorize
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class AuthorizeAttribute : Attribute ,IAuthorizationFilter 
+    public class AuthorizeAttribute : Attribute, IAuthorizationFilter
     {
         private readonly IList<Role> _roles;
         public AuthorizeAttribute(params Role[] roles)

@@ -111,7 +111,7 @@ namespace ShopApi.Controllers
 
                 await commonRepository.Delete(id);
 
-                return Ok($"User with id:{id} Deleted.");
+                return Ok($"Category Deleted.");
             }
             catch (Exception)
             {

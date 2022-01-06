@@ -14,6 +14,7 @@ namespace ShopApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(new[] { Role.SuperSu, Role.Administrator })]
     public class ItemsController : ControllerBase
     {
         private readonly ICommonRepository<Item> commonRepository;
@@ -69,7 +70,7 @@ namespace ShopApi.Controllers
 
         // PUT: api/Items/5
         [HttpPut("{id:int}")]
-        [Authorize(new[] { Role.SuperSu, Role.Administrator })]
+        
         public async Task<ActionResult<Item>> PutItem(int id, Item item)
         {
             try
@@ -89,7 +90,6 @@ namespace ShopApi.Controllers
 
         // POST: api/Items
         [HttpPost]
-        [Authorize(new[] { Role.SuperSu, Role.Administrator })]
         public async Task<ActionResult<Item>> PostItem(Item item)
         {
             try
@@ -114,8 +114,7 @@ namespace ShopApi.Controllers
         }
 
         // DELETE: api/Items/5
-        [HttpDelete]
-        [Authorize(new[] { Role.SuperSu, Role.Administrator })]
+        [HttpDelete("{id:int}")]
         public async Task<ActionResult<Item>> DeleteItem(int id)
         {
             try
@@ -128,7 +127,7 @@ namespace ShopApi.Controllers
 
                 await commonRepository.Delete(id);
 
-                return Ok($"Item with id:{id} Deleted.");
+                return Ok($"Item Deleted.");
             }
             catch (Exception)
             {

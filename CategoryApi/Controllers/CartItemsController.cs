@@ -6,12 +6,14 @@ using Microsoft.AspNetCore.Http;
 using ShopApi.Interface;
 using ShopApi.Authorize;
 using ShopApi.Entity;
+using ShopApi.Helpers;
 
 namespace ShopApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(new[] { Role.SuperSu, Role.Administrator })]
+    [ServiceFilter(typeof(UserTracker))]
+    [Authorize(new[] { Role.User })]
     public class CartItemsController : ControllerBase
     {
         private readonly ICommonRepository<CartItem> commonRepository;
@@ -26,7 +28,6 @@ namespace ShopApi.Controllers
 
         // GET: api/CartItems
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ActionResult> GetCartItems()
         {
             try
@@ -44,7 +45,6 @@ namespace ShopApi.Controllers
 
         // GET: api/CartItems/5
         [HttpGet("{id:int}")]
-        [AllowAnonymous]
         public async Task<ActionResult<CartItem>> GetCartItem(int id)
         {
             try
@@ -92,22 +92,13 @@ namespace ShopApi.Controllers
         {
             var cartItem =await commonRepository.GetSpecific(id);
 
-            try
-            {
-                return await cartItemRepository.IncreaseQuantity(id, quantity);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error Increasing Quantity."); ;
-            }
+            return await cartItemRepository.IncreaseQuantity(id, quantity);
         }
 
         // POST: api/CartItems
         [HttpPost]
         public async Task<ActionResult<CartItem>> PostCartItem(CartItem cartItem)
         {
-            try
-            {
                 if (cartItem == null)
                 {
                     return BadRequest();
@@ -120,22 +111,14 @@ namespace ShopApi.Controllers
                 }
                 var newitem = await commonRepository.Add(cartItem);
 
-
                 return CreatedAtAction(nameof(GetCartItem),
                     new { id = newitem.Id }, newitem);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error Adding new item to cart.");
-            }
         }
 
         // DELETE: api/CartItems/5
-        [HttpDelete]
-        public async Task<ActionResult<Item>> DeleteCartItem(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<CartItem>> DeleteCartItem(int id)
         {
-            try
-            {
                 CartItem cartItem = await commonRepository.GetSpecific(id);
                 if (cartItem == null)
                 {
@@ -145,11 +128,6 @@ namespace ShopApi.Controllers
                 await commonRepository.Delete(id);
 
                 return Ok($"Cart Item with id:{id} Deleted.");
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error Deleting Cart Item.");
-            }
         }
     }
 }

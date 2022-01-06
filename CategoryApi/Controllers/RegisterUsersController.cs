@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShopApi.Authorize;
 using ShopApi.Entity;
+using ShopApi.Helpers;
 
 namespace ShopApi.Controllers
 {
     //[Authorize(Role.SuperSu)]
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(UserTracker))]
     public class RegisterUsersController : ControllerBase
     {
         private readonly ICommonRepository<RegisterUser> commonRepository;
