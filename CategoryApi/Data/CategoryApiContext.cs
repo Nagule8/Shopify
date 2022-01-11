@@ -20,6 +20,7 @@ namespace ShopApi.Data
         public DbSet<Item> Items { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<RegisterUser> RegisterUsers { get; set; }
-        public DbSet<ShopApi.Models.UserActivity> UserActivity { get; set; }
+        public DbSet<UserActivity> UserActivity { get; set; }
+        public DbSet<Image> Images { get; set; }
     }
 }

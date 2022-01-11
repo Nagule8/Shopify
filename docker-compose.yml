@@ -1,8 +1,0 @@
-version: '3.4'
-
-services:
-  shopapi:
-    image: ${DOCKER_REGISTRY-}shopapi
-    build:
-      context: .
-      dockerfile: CategoryApi/Dockerfile

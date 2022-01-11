@@ -18,6 +18,9 @@ using ShopApi.Authorize;
 using ShopApi.Data;
 using System.Text.Json.Serialization;
 using Serilog;
+using ShopApi.Repositories;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace ShopApi
 {
@@ -39,6 +42,8 @@ namespace ShopApi
                 x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
+            //services.AddDirectoryBrowser();
+
             /**services.AddControllers(options =>
             {
                 options.Filters.Add<CustomExceptionFiler>();
@@ -52,7 +57,6 @@ namespace ShopApi
             services.AddScoped<ICommonRepository<RegisterUser>, UserRepository>();
             services.AddScoped<ICommonRepository<CartItem>, CartItemRepository>();
 
-
             services.AddScoped<IJwtUtils, JWTUtils>();
 
             services.AddScoped<CategoryApiContext>();
@@ -60,6 +64,7 @@ namespace ShopApi
             services.AddScoped<ICategoryRepository,CategoryRepository>();
             services.AddScoped<IItemRepository,ItemRepository>();
             services.AddScoped<ICartItemRepository,CartItemRepository>();
+            services.AddScoped<IImageRepository, ImageRepository>();
 
             services.AddScoped<UserTracker>();
 
@@ -84,11 +89,13 @@ namespace ShopApi
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseStaticFiles(new StaticFileOptions
+            //app.UseStaticFiles();
+
+            /*app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(ConfigurationPath.Combine(env.WebRootPath + "\\Photos\\")),
-                RequestPath = "/Photos"
-            }) ;
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Photos")),
+                RequestPath = new PathString("/Photos")
+            }); */
 
             app.UseSerilogRequestLogging();
             app.UseRouting();

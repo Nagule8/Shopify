@@ -33,17 +33,9 @@ namespace ShopApi.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> GetItems()
         {
-            try
-            {
                 var result = await commonRepository.Get();
 
                 return Ok(result);
-
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from database.");
-            }
 
         }
 
@@ -52,8 +44,6 @@ namespace ShopApi.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<Item>> GetItem(int id)
         {
-            try
-            {
                 Item item = await commonRepository.GetSpecific(id);
                 if (item == null)
                 {
@@ -61,11 +51,6 @@ namespace ShopApi.Controllers
                 }
 
                 return Ok(item);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from database.");
-            }
         }
 
         // PUT: api/Items/5
@@ -73,27 +58,18 @@ namespace ShopApi.Controllers
         
         public async Task<ActionResult<Item>> PutItem(int id, Item item)
         {
-            try
-            {
                 var itemToUpdate = await commonRepository.GetSpecific(id);
                 if (itemToUpdate == null)
                 {
                     return NotFound($"Item with id:{id} not found");
                 }
                 return await commonRepository.Update(item);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error Updating User/UnAuthorized access.");
-            }
         }
 
         // POST: api/Items
         [HttpPost]
         public async Task<ActionResult<Item>> PostItem(Item item)
         {
-            try
-            {
 
                 var item1 = await itemRepository.GetItemBySlug(item.Name);
                 if (item1 != null)
@@ -106,19 +82,12 @@ namespace ShopApi.Controllers
 
                 return CreatedAtAction(nameof(GetItem),
                     new { id = newitem.Id }, newitem);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error creating new User/UnAuthorized access.");
-            }
         }
 
         // DELETE: api/Items/5
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<Item>> DeleteItem(int id)
         {
-            try
-            {
                 Item item = await commonRepository.GetSpecific(id);
                 if (item == null)
                 {
@@ -128,11 +97,6 @@ namespace ShopApi.Controllers
                 await commonRepository.Delete(id);
 
                 return Ok($"Item Deleted.");
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error Deleting Item.");
-            }
         }
 
         /*//Save Image
