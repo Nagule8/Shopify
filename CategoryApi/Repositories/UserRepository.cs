@@ -10,26 +10,26 @@ namespace ShopApi.Services
 {
     public class UserRepository : IUserRepository,ICommonRepository<RegisterUser>
     {
-        private readonly CategoryApiContext categoryApiContext;
-        public UserRepository(CategoryApiContext categoryApiContext)
+        private readonly CategoryApiContext _context;
+        public UserRepository(CategoryApiContext context)
         {
-            this.categoryApiContext = categoryApiContext;
+            _context = context;
         }
         public async Task<IEnumerable<RegisterUser>> Get()
         {
-            return await categoryApiContext.RegisterUsers.ToListAsync();
+            return await _context.RegisterUsers.ToListAsync();
         }
 
         public async Task<RegisterUser> GetSpecific(int id)
         {
-            var res = await categoryApiContext.RegisterUsers
+            var res = await _context.RegisterUsers
                 .FirstOrDefaultAsync(e => e.Id == id);
             return res;
 
         }
         public async Task<int> GetUserId(string username)
         {
-            RegisterUser registerUser = await categoryApiContext.RegisterUsers
+            RegisterUser registerUser = await _context.RegisterUsers
                 .FirstOrDefaultAsync(e => e.UserName == username);
 
             if (registerUser != null)
@@ -43,7 +43,7 @@ namespace ShopApi.Services
 
         public async  Task<RegisterUser> GetUserByName(string username)
         {
-            var res = await categoryApiContext.RegisterUsers
+            var res = await _context.RegisterUsers
                 .FirstOrDefaultAsync(e => e.UserName == username);
 
             return res;
@@ -59,14 +59,14 @@ namespace ShopApi.Services
                 Role = user.Role,
                 Password = BCrypt.Net.BCrypt.HashPassword(user.Password)
         };
-            var res = await categoryApiContext.RegisterUsers.AddAsync(user1);
-            await categoryApiContext.SaveChangesAsync();
+            var res = await _context.RegisterUsers.AddAsync(user1);
+            await _context.SaveChangesAsync();
 
             return res.Entity;
         }
         public async Task<RegisterUser> Update(RegisterUser user)
         {
-            var result = await categoryApiContext.RegisterUsers
+            var result = await _context.RegisterUsers
                 .FirstOrDefaultAsync(e => e.Id == user.Id);
 
             if (result != null)
@@ -76,7 +76,7 @@ namespace ShopApi.Services
                 result.Role = user.Role;
                 result.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
 
-                await categoryApiContext.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 return result;
             }
 
@@ -84,19 +84,19 @@ namespace ShopApi.Services
         }
         public async Task Delete(int id)
         {
-            var result = await categoryApiContext.RegisterUsers
+            var result = await _context.RegisterUsers
                 .FirstOrDefaultAsync(e => e.Id == id);
             if(result != null)
             {
-                categoryApiContext.RegisterUsers.Remove(result);
-                await categoryApiContext.SaveChangesAsync();
+                _context.RegisterUsers.Remove(result);
+                await _context.SaveChangesAsync();
             }
 
         }
 
         public bool Exists(int id)
         {
-            return categoryApiContext.CartItems.Count(e => e.Id == id) > 0;
+            return _context.CartItems.Count(e => e.Id == id) > 0;
         }
 
     }

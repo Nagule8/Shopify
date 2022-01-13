@@ -17,14 +17,14 @@ namespace ShopApi.Controllers
     [Authorize(new[] { Role.SuperSu, Role.Administrator })]
     public class ItemsController : ControllerBase
     {
-        private readonly ICommonRepository<Item> commonRepository;
-        private readonly IItemRepository itemRepository;
+        private readonly ICommonRepository<Item> _commonRepository;
+        private readonly IItemRepository _itemRepository;
         private readonly IDistributedCache _cache;
 
         public ItemsController(ICommonRepository<Item> commonRepository, IItemRepository itemRepository, IDistributedCache cache)
         {
-            this.commonRepository = commonRepository;
-            this.itemRepository = itemRepository;
+            _commonRepository = commonRepository;
+            _itemRepository = itemRepository;
             _cache = cache;
         }
 
@@ -33,7 +33,7 @@ namespace ShopApi.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> GetItems()
         {
-                var result = await commonRepository.Get();
+                var result = await _commonRepository.Get();
 
                 return Ok(result);
 
@@ -44,7 +44,7 @@ namespace ShopApi.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<Item>> GetItem(int id)
         {
-                Item item = await commonRepository.GetSpecific(id);
+                Item item = await _commonRepository.GetSpecific(id);
                 if (item == null)
                 {
                     return NotFound();
@@ -58,12 +58,12 @@ namespace ShopApi.Controllers
         
         public async Task<ActionResult<Item>> PutItem(int id, Item item)
         {
-                var itemToUpdate = await commonRepository.GetSpecific(id);
+                var itemToUpdate = await _commonRepository.GetSpecific(id);
                 if (itemToUpdate == null)
                 {
                     return NotFound($"Item with id:{id} not found");
                 }
-                return await commonRepository.Update(item);
+                return await _commonRepository.Update(item);
         }
 
         // POST: api/Items
@@ -71,13 +71,13 @@ namespace ShopApi.Controllers
         public async Task<ActionResult<Item>> PostItem(Item item)
         {
 
-                var item1 = await itemRepository.GetItemBySlug(item.Name);
+                var item1 = await _itemRepository.GetItemBySlug(item.Name);
                 if (item1 != null)
                 {
-                    ModelState.AddModelError("Email", "User already exist.");
+                    ModelState.AddModelError("Item", "Item already exist.");
                     return BadRequest(ModelState);
                 }
-                var newitem = await commonRepository.Add(item);
+                var newitem = await _commonRepository.Add(item);
 
 
                 return CreatedAtAction(nameof(GetItem),
@@ -88,15 +88,15 @@ namespace ShopApi.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<Item>> DeleteItem(int id)
         {
-                Item item = await commonRepository.GetSpecific(id);
+                Item item = await _commonRepository.GetSpecific(id);
                 if (item == null)
                 {
-                    return NotFound($"User with id:{id} not found.");
+                    return NotFound($"Item with id:{id} not found.");
                 }
 
-                await commonRepository.Delete(id);
+                await _commonRepository.Delete(id);
 
-                return Ok($"Item Deleted.");
+                return Ok($"Item with id:{id} Deleted.");
         }
 
         /*//Save Image

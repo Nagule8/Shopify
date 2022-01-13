@@ -2,12 +2,10 @@
 using System.Threading.Tasks;
 using ShopApi.Interface;
 using ShopApi.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShopApi.Authorize;
 using ShopApi.Entity;
 using ShopApi.Helpers;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
 namespace ShopApi.Controllers
@@ -17,27 +15,20 @@ namespace ShopApi.Controllers
     [ServiceFilter(typeof(UserTracker))]
     public class CategoriesController : ControllerBase
     {
-        private readonly ICommonRepository<Category> commonRepository;
-        private readonly ICategoryRepository categoryRepository;
+        private readonly ICommonRepository<Category> _commonRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
         public CategoriesController(ICommonRepository<Category> commonRepository,ICategoryRepository categoryRepository)
         {
-            this.commonRepository = commonRepository;
-            this.categoryRepository = categoryRepository;
+            _commonRepository = commonRepository;
+            _categoryRepository = categoryRepository;
         }
 
         // GET: api/Categories
         [HttpGet]
         public async Task<ActionResult> GetCategories()
         {
-            try
-            {
-                return Ok(await commonRepository.Get());
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from database.");
-            }
+            return Ok(await _commonRepository.Get());
         }
 
         // GET: api/Categories/5
@@ -45,12 +36,9 @@ namespace ShopApi.Controllers
         
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
-                Category category = await commonRepository.GetSpecific(id);
-                if(category == null)
-                {
-                throw new KeyNotFoundException();
-                }
-                return Ok(category);
+            Category category = await _commonRepository.GetSpecific(id);
+
+            return Ok(category);
         }
 
         // PUT: api/Categories/5
@@ -60,9 +48,9 @@ namespace ShopApi.Controllers
         public async Task<ActionResult<Category>> PutCategory(int id, Category category)
         {
 
-                var categoryToUpdate = await commonRepository.GetSpecific(id);
+            //var categoryToUpdate = await _commonRepository.GetSpecific(id);
 
-                return await commonRepository.Update(category);
+            return await _commonRepository.Update(category);
         }
 
         // POST: api/Categories
@@ -70,30 +58,21 @@ namespace ShopApi.Controllers
         [Authorize(new[] { Role.SuperSu, Role.Administrator })]
         public async Task<ActionResult<Category>> PostCategory(Category category)
         {
-            try
+            if (category == null)
             {
-
-                if (category == null)
-                {
-                    return BadRequest();
-                }
-
-                var cate = await categoryRepository.GetCategoryByName(category.Name);
-                if (cate != null)
-                {
-                    ModelState.AddModelError("category", "Category already exist.");
-                    return BadRequest(ModelState);
-                }
-                var newCategory = await commonRepository.Add(category);
-
-                return CreatedAtAction(nameof(GetCategory),
-                    new { id = newCategory.Id }, newCategory);
+                return BadRequest();
             }
 
-            catch (Exception)
+            var cate = await _categoryRepository.GetCategoryByName(category.Name);
+            if (cate != null)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error creating new Category/ Unauthorized Access.");
+                ModelState.AddModelError("category", "Category already exist.");
+                return BadRequest(ModelState);
             }
+            var newCategory = await _commonRepository.Add(category);
+
+            return CreatedAtAction(nameof(GetCategory),
+                new { id = newCategory.Id }, newCategory);
         }
 
         // DELETE: api/Categories/5
@@ -101,22 +80,15 @@ namespace ShopApi.Controllers
         [Authorize(new[] { Role.SuperSu, Role.Administrator })]
         public async Task<ActionResult<Category>> DeleteCategory(int id)
         {
-            try
-            {
-                Category category = await commonRepository.GetSpecific(id);
+                Category category = await _commonRepository.GetSpecific(id);
                 if (category == null)
                 {
                     return NotFound($"User with id:{id} not found.");
                 }
 
-                await commonRepository.Delete(id);
+                await _commonRepository.Delete(id);
 
-                return Ok($"Category Deleted.");
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error Deleting Category.");
-            }
+                return Ok($"Category with id:{id} Deleted.");
         }
     }
 }

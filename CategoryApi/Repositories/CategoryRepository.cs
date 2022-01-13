@@ -13,61 +13,61 @@ namespace ShopApi.Services
 {
     public class CategoryRepository : ICategoryRepository, ICommonRepository<Category>
     {
-        private readonly CategoryApiContext categoryApiContext;
-        private readonly IDistributedCache cache;
+        private readonly CategoryApiContext _context;
+        private readonly IDistributedCache _cache;
 
-        public CategoryRepository(CategoryApiContext categoryApiContext, IDistributedCache cache )
+        public CategoryRepository(CategoryApiContext context, IDistributedCache cache )
         {
-            this.categoryApiContext = categoryApiContext;
-            this.cache = cache;
+            _context = context;
+            _cache = cache;
         }
 
         public async Task<IEnumerable<Category>> Get()
         {
-            var cachedData = cache.GetString("categories");
-            if (string.IsNullOrEmpty(cachedData))
+            var _cachedData = _cache.GetString("categories");
+            if (string.IsNullOrEmpty(_cachedData))
             {
-                var res = await categoryApiContext.Categories.ToListAsync();
+                var res = await _context.Categories.ToListAsync();
 
-                var cachedOptions = new DistributedCacheEntryOptions()
+                var _cachedOptions = new DistributedCacheEntryOptions()
                 {
                     AbsoluteExpiration = DateTime.Now.AddSeconds(30),
                 };
-                cache.SetString("categories", JsonConvert.SerializeObject(res), cachedOptions);
+                _cache.SetString("categories", JsonConvert.SerializeObject(res), _cachedOptions);
                 return res;
             }
-            else { return JsonConvert.DeserializeObject<IEnumerable<Category>>(cachedData); }
+            else { return JsonConvert.DeserializeObject<IEnumerable<Category>>(_cachedData); }
                 
         }
 
         public async Task<Category> GetSpecific(int id)
         {
-            var cachedData = cache.GetString("specific-category");
-            if (string.IsNullOrEmpty(cachedData))
+            var _cachedData = _cache.GetString("specific-category");
+            if (string.IsNullOrEmpty(_cachedData))
             {
-                var res = await categoryApiContext.Categories
+                var res = await _context.Categories
                 .FirstOrDefaultAsync(e => e.Id == id);
 
-                var cachedOptions = new DistributedCacheEntryOptions()
+                var _cachedOptions = new DistributedCacheEntryOptions()
                 {
                     AbsoluteExpiration = DateTime.Now.AddSeconds(30),
                 };
-                cache.SetString("specific-category", JsonConvert.SerializeObject(res), cachedOptions);
+                _cache.SetString("specific-category", JsonConvert.SerializeObject(res), _cachedOptions);
                 return res;
             }
-            else { return JsonConvert.DeserializeObject<Category>(cachedData); }
+            else { return JsonConvert.DeserializeObject<Category>(_cachedData); }
         }
 
         public async Task<Category> Add(Category category)
         {
-                var res =await categoryApiContext.Categories.AddAsync(category);
-            await categoryApiContext.SaveChangesAsync();
+                var res =await _context.Categories.AddAsync(category);
+            await _context.SaveChangesAsync();
 
             return res.Entity;
         }
         public async Task<Category> Update(Category Category)
         {
-            var result = await categoryApiContext.Categories
+            var result = await _context.Categories
                 .FirstOrDefaultAsync(e => e.Id == Category.Id);
 
             if (result != null)
@@ -75,7 +75,7 @@ namespace ShopApi.Services
                 result.Name = Category.Name;
                 result.Sorting = 10;
 
-                await categoryApiContext.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 return result;
             }
 
@@ -83,19 +83,19 @@ namespace ShopApi.Services
         }
         public async Task Delete(int id)
         {
-            var result = await categoryApiContext.Categories
+            var result = await _context.Categories
                 .FirstOrDefaultAsync(e => e.Id == id);
             if (result != null)
             {
-                categoryApiContext.Categories.Remove(result);
-                await categoryApiContext.SaveChangesAsync();
+                _context.Categories.Remove(result);
+                await _context.SaveChangesAsync();
             }
 
         }
 
         public async Task<Category> GetCategoryByName(string name)
         {
-            var res = await categoryApiContext.Categories
+            var res = await _context.Categories
         .FirstOrDefaultAsync(e => e.Name == name);
             try
             {
@@ -110,7 +110,7 @@ namespace ShopApi.Services
 
         public bool Exists(int id)
         {
-            return categoryApiContext.Categories.Count(e => e.Id == id) > 0;
+            return _context.Categories.Count(e => e.Id == id) > 0;
         }
     }
 }

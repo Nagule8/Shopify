@@ -16,116 +16,96 @@ namespace ShopApi.Controllers
     [Authorize(new[] { Role.User })]
     public class CartItemsController : ControllerBase
     {
-        private readonly ICommonRepository<CartItem> commonRepository;
-        private readonly ICartItemRepository cartItemRepository;
-        private readonly IJwtUtils jwtUtils;
+        private readonly ICommonRepository<CartItem> _commonRepository;
+        private readonly ICartItemRepository _cartItemRepository;
+        private readonly IJwtUtils _jwtUtils;
         public CartItemsController(ICommonRepository<CartItem> commonRepository,ICartItemRepository cartItemRepository, IJwtUtils jwtUtils)
         {
-            this.commonRepository = commonRepository;
-            this.cartItemRepository = cartItemRepository;
-            this.jwtUtils = jwtUtils;
+            _commonRepository = commonRepository;
+            _cartItemRepository = cartItemRepository;
+            _jwtUtils = jwtUtils;
         }
 
         // GET: api/CartItems
         [HttpGet]
         public async Task<ActionResult> GetCartItems()
         {
-            try
-            {
-                var jwt = Request.Cookies["jwt"];
-                var userId = jwtUtils.ValidateJwtToken(jwt);
+            var jwt = Request.Cookies["jwt"];
+            var userId = _jwtUtils.ValidateJwtToken(jwt);
 
-                return Ok(await cartItemRepository.GetCartItems((int)userId));
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from database.");
-            }
+            return Ok(await _cartItemRepository.GetCartItems((int)userId));
         }
 
         // GET: api/CartItems/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<CartItem>> GetCartItem(int id)
         {
-            try
+            CartItem cartItem = await _commonRepository.GetSpecific(id);
+            if (cartItem == null)
             {
-                CartItem cartItem = await commonRepository.GetSpecific(id);
-                if (cartItem == null)
-                {
-                    return NotFound();
-                }
+                return NotFound();
+            }
 
-                return Ok(cartItem);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from database.");
-            }
+            return Ok(cartItem);
         }
 
         // PUT: api/CartItems/5
         [HttpPut("{id:int}")]
         public async Task<ActionResult<CartItem>> PutCartItem(int id, CartItem cartItem)
         {
-            try
+            if (cartItem.Id != id)
             {
-                if (cartItem.Id != id)
-                {
-                    return BadRequest("Cart Item Id mismatch!.");
-                }
-                var itemToUpdate = await commonRepository.GetSpecific(id);
-                if (itemToUpdate == null)
-                {
-                    return NotFound($"Cart Item with id:{id} not found");
-                }
-                return await commonRepository.Update(cartItem);
+                return BadRequest("Cart Item Id mismatch!.");
             }
-            catch (Exception)
+            var itemToUpdate = await _commonRepository.GetSpecific(id);
+            if (itemToUpdate == null)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error Updating Cart item.");
+                return NotFound($"Cart Item with id:{id} not found");
             }
+            return await _commonRepository.Update(cartItem);
         }
 
         //PUT Increase Quantity
         [HttpPut("Increase/{id:int}")]
         public async Task<ActionResult<CartItem>> PUTIncreaseQuantity(int id,int quantity)
         {
-            var cartItem =await commonRepository.GetSpecific(id);
+            //var cartItem =await _commonRepository.GetSpecific(id);
 
-            return await cartItemRepository.IncreaseQuantity(id, quantity);
+            return await _cartItemRepository.IncreaseQuantity(id, quantity);
         }
 
         // POST: api/CartItems
         [HttpPost]
         public async Task<ActionResult<CartItem>> PostCartItem(CartItem cartItem)
         {
-                if (cartItem == null)
-                {
-                    return BadRequest();
-                }
-                var item1 = await cartItemRepository.GetCartItemByItemId(cartItem.ItemId);
-                if (item1 != null)
-                {
-                    ModelState.AddModelError("Cart", "Item already exist.");
-                    return BadRequest(ModelState);
-                }
-                var newitem = await commonRepository.Add(cartItem);
+            if (cartItem == null)
+            {
+                ModelState.AddModelError("Cart", "Item is null.");
+                return BadRequest(ModelState);
+            }
+            var item1 = await _cartItemRepository.GetCartItemByItemId(cartItem.ItemId);
+            if (item1 != null)
+            {
+                ModelState.AddModelError("Cart", "Item already exist.");
+                return BadRequest(ModelState);
+            }
+            var newitem = await _commonRepository.Add(cartItem);
 
-                return CreatedAtAction(nameof(GetCartItem),
-                    new { id = newitem.Id }, newitem);
+            return CreatedAtAction(nameof(GetCartItem),
+                new { id = newitem.Id }, newitem);
         }
 
         // DELETE: api/CartItems/5
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<CartItem>> DeleteCartItem(int id)
         {
-                CartItem cartItem = await commonRepository.GetSpecific(id);
+                CartItem cartItem = await _commonRepository.GetSpecific(id);
                 if (cartItem == null)
                 {
                     return NotFound($"Cart item with id:{id} not found.");
                 }
 
-                await commonRepository.Delete(id);
+                await _commonRepository.Delete(id);
 
                 return Ok($"Cart Item with id:{id} Deleted.");
         }

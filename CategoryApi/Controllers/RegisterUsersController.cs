@@ -17,72 +17,52 @@ namespace ShopApi.Controllers
     [ServiceFilter(typeof(UserTracker))]
     public class RegisterUsersController : ControllerBase
     {
-        private readonly ICommonRepository<RegisterUser> commonRepository;
-        private readonly IUserRepository userRepository;
-        private readonly IJwtUtils jwtUtils;
+        private readonly ICommonRepository<RegisterUser> _commonRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IJwtUtils _jwtUtils;
 
         public RegisterUsersController(ICommonRepository<RegisterUser> commonRepository, IUserRepository userRepository, IJwtUtils jwtUtils)
         {
-            this.commonRepository = commonRepository;
-            this.userRepository = userRepository;
-            this.jwtUtils = jwtUtils;
+            _commonRepository = commonRepository;
+            _userRepository = userRepository;
+            _jwtUtils = jwtUtils;
         }
 
         // GET: api/RegisterUsers
         [HttpGet]
+        [Authorize(new[] { Role.SuperSu })]
         public async Task<ActionResult> GetRegisterUsers()
         {
-            try
-            {
-                return Ok(await commonRepository.Get());
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,"Error retrieving data from database.");
-            }
+            return Ok(await _commonRepository.Get());
         }
 
         // GET: api/RegisterUsers/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<RegisterUser>> GetRegisterUser(int id)
         {
-            try
+            RegisterUser registerUser = await _commonRepository.GetSpecific(id);
+            if (registerUser == null)
             {
-                RegisterUser registerUser = await commonRepository.GetSpecific(id);
-                if (registerUser == null)
-                {
-                    return NotFound();
-                }
+                return NotFound();
+            }
 
-                return Ok(registerUser);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from database.");
-            }
+            return Ok(registerUser);
         }
 
         // PUT: api/RegisterUsers/5
         [HttpPut("{id:int}")]
         public async Task<ActionResult<RegisterUser>> PutRegisterUser(int id, RegisterUser registerUser)
         {
-            try
+            if (registerUser.Id != id)
             {
-                if (registerUser.Id != id)
-                {
-                    return BadRequest("User Id mismatch!.");
-                }
-                var userToUpdate = await commonRepository.GetSpecific(id);
-                if (userToUpdate == null)
-                {
-                    return NotFound($"User with id:{id} not found");
-                }
-                return await commonRepository.Update(registerUser);
+                return BadRequest("User Id mismatch!.");
             }
-            catch (Exception)
+            var userToUpdate = await _commonRepository.GetSpecific(id);
+            if (userToUpdate == null)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error Updating User.");
+                return NotFound($"User with id:{id} not found");
             }
+            return await _commonRepository.Update(registerUser);
 
         }
 
@@ -90,51 +70,38 @@ namespace ShopApi.Controllers
         [HttpPost]
         public async Task<ActionResult<RegisterUser>> PostRegisterUser(RegisterUser registerUser)
         {
-            try
+            if(registerUser == null)
             {
-                if(registerUser == null)
-                {
-                    return BadRequest();
-                }
-                var user = await userRepository.GetUserByName(registerUser.UserName);
-                if(user != null)
-                {
-                    ModelState.AddModelError("Email","User already exist.");
-                    return BadRequest(ModelState);
-                }
-                var newUser = await commonRepository.Add(registerUser);
+                return BadRequest();
+            }
+            var user = await _userRepository.GetUserByName(registerUser.UserName);
+            if(user != null)
+            {
+                ModelState.AddModelError("Email","User already exist.");
+                return BadRequest(ModelState);
+            }
+            var newUser = await _commonRepository.Add(registerUser);
 
 
-                return CreatedAtAction(nameof(GetRegisterUser),
-                    new { id = newUser.Id },newUser);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error creating new User.");
-            }
+            return CreatedAtAction(nameof(GetRegisterUser),
+                new { id = newUser.Id },newUser);
 
         }
 
         // DELETE: api/RegisterUsers/5
         [HttpDelete("{id:int}")]
+        [Authorize(new[] { Role.SuperSu })]
         public async Task<ActionResult> DeleteRegisterUser(int id)
         {
-            try
+            RegisterUser registerUser = await _commonRepository.GetSpecific(id);
+            if (registerUser == null)
             {
-                RegisterUser registerUser = await commonRepository.GetSpecific(id);
-                if (registerUser == null)
-                {
-                    return NotFound($"User with id:{id} not found.");
-                }
-
-                await commonRepository.Delete(id);
-
-                return Ok($"User with id:{id} Deleted.");
+                return NotFound($"User with id:{id} not found.");
             }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error Deleting User.");
-            }
+
+            await _commonRepository.Delete(id);
+
+            return Ok($"User with id:{id} Deleted.");
 
         }
 
@@ -143,34 +110,27 @@ namespace ShopApi.Controllers
         //[Route("api/registeruser/GetUserId")]
         public async Task<ActionResult<int>> GetUserId(string username)
         {
-            try
+            var res = await _userRepository.GetUserId(username);
+            if (res == 0)
             {
-                var res = await userRepository.GetUserId(username);
-                if (res == 0)
-                {
-                    return NotFound();
-                }
+                return NotFound();
+            }
 
-                return Ok(res);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from database.");
-            }
+            return Ok(res);
         }
 
         //POST: Login
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginDto login)
         {
-            var user = await userRepository.GetUserByName(login.Name);
+            var user = await _userRepository.GetUserByName(login.Name);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(login.Password, user.Password))
             {
                 return BadRequest("Invalid Credentials");
             }
 
-            var jwt = jwtUtils.GenerateJwtToken(user); 
+            var jwt = _jwtUtils.GenerateJwtToken(user); 
 
             Response.Cookies.Append("jwt", jwt, new CookieOptions
             {
@@ -186,19 +146,12 @@ namespace ShopApi.Controllers
         [HttpGet("User")]
         public async Task<IActionResult> User()
         {
-            try
-            {
-                var jwt = Request.Cookies["jwt"];
-                var userId = jwtUtils.ValidateJwtToken(jwt);
+            var jwt = Request.Cookies["jwt"];
+            var userId = _jwtUtils.ValidateJwtToken(jwt);
 
-                var user = await commonRepository.GetSpecific((int)userId);
+            var user = await _commonRepository.GetSpecific((int)userId);
 
-                return Ok(user);
-            }
-            catch (Exception)
-            {
-                return Unauthorized();
-            }
+            return Ok(user);
         }
 
         //POST: Logout User

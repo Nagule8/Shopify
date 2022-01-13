@@ -13,26 +13,26 @@ namespace ShopApi.Services
 {
     public class ItemRepository : IItemRepository,ICommonRepository<Item>
     {
-        private readonly CategoryApiContext categoryApiContext;
-        private readonly IDistributedCache cache;
+        private readonly CategoryApiContext _context;
+        private readonly IDistributedCache _cache;
 
-        public ItemRepository(CategoryApiContext categoryApiContext, IDistributedCache cache)
+        public ItemRepository(CategoryApiContext context, IDistributedCache cache)
         {
-            this.cache = cache;
-            this.categoryApiContext = categoryApiContext;
+            _cache = cache;
+            _context = context;
         }
 
         public async Task<IEnumerable<Item>> Get()
         {
-            var cachedData = cache.GetString("items");
+            var cachedData = _cache.GetString("items");
             if (string.IsNullOrEmpty(cachedData))
             {
-                var res = await categoryApiContext.Items.Include(e => e.Category).ToListAsync();
+                var res = await _context.Items.Include(e => e.Category).ToListAsync();
                 var cacheOptions = new DistributedCacheEntryOptions()
                 {
                     AbsoluteExpiration = DateTime.Now.AddSeconds(30),
                 };
-                cache.SetString("items", JsonConvert.SerializeObject(res), cacheOptions);
+                _cache.SetString("items", JsonConvert.SerializeObject(res), cacheOptions);
 
                 return res;
             }
@@ -45,16 +45,16 @@ namespace ShopApi.Services
 
         public async Task<Item> GetSpecific(int id)
         {
-            var cachedData = cache.GetString("specific-item");
+            var cachedData = _cache.GetString("specific-item");
             if (string.IsNullOrEmpty(cachedData))
             {
-                var res = await categoryApiContext.Items.Include(e => e.Category)
+                var res = await _context.Items.Include(e => e.Category)
                 .FirstOrDefaultAsync(e => e.Id == id);
                 var cacheOptions = new DistributedCacheEntryOptions()
                 {
                     AbsoluteExpiration = DateTime.Now.AddSeconds(30),
                 };
-                cache.SetString("specific-item", JsonConvert.SerializeObject(res), cacheOptions);
+                _cache.SetString("specific-item", JsonConvert.SerializeObject(res), cacheOptions);
 
                 return res;
             }
@@ -66,7 +66,7 @@ namespace ShopApi.Services
         }
         public async Task<Item> GetItemBySlug(string name)
         {
-            var res = await categoryApiContext.Items.FirstOrDefaultAsync(e => e.Name == name);
+            var res = await _context.Items.FirstOrDefaultAsync(e => e.Name == name);
 
             return res;
 
@@ -74,14 +74,14 @@ namespace ShopApi.Services
 
         public async Task<Item> Add(Item Item)
         {
-            var res = await categoryApiContext.Items.AddAsync(Item);
-            await categoryApiContext.SaveChangesAsync();
+            var res = await _context.Items.AddAsync(Item);
+            await _context.SaveChangesAsync();
 
             return res.Entity;
         }
         public async Task<Item> Update(Item Item)
         {
-            var result = await categoryApiContext.Items
+            var result = await _context.Items
                 .FirstOrDefaultAsync(e => e.Id == Item.Id);
 
             if (result != null)
@@ -92,7 +92,7 @@ namespace ShopApi.Services
                 result.CategoryId = Item.CategoryId;
                 result.ImageName = Item.ImageName;
 
-                await categoryApiContext.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 return result;
             }
 
@@ -100,19 +100,19 @@ namespace ShopApi.Services
         }
         public async Task Delete(int id)
         {
-            var result = await categoryApiContext.Items
+            var result = await _context.Items
                 .FirstOrDefaultAsync(e => e.Id == id);
             if (result != null)
             {
-                categoryApiContext.Items.Remove(result);
-                await categoryApiContext.SaveChangesAsync();
+                _context.Items.Remove(result);
+                await _context.SaveChangesAsync();
             }
 
         }
 
         public bool Exists(int id)
         {
-            return categoryApiContext.CartItems.Count(e => e.Id == id) > 0;
+            return _context.CartItems.Count(e => e.Id == id) > 0;
         }
     }
 }

@@ -1,39 +1,32 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
-using Newtonsoft.Json;
 using ShopApi.Data;
 using ShopApi.Interface;
-using ShopApi.Models;
-using System;
-using System.Data.Entity;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace ShopApi.Repositories
 {
     public class ImageRepository : IImageRepository
     {
-        private readonly CategoryApiContext _categoryApiContext;
+        private readonly CategoryApiContext _context;
         private readonly IDistributedCache _cache;
-        private static readonly ImageConverter _imageConverter = new ImageConverter();
 
         public ImageRepository(CategoryApiContext categoryApiContext, IDistributedCache cache)
         {
-            _categoryApiContext = categoryApiContext;
+            _context = categoryApiContext;
             _cache = cache;
         }
 
         //Get image
-        public byte[] DisplayImage(int id)
+        public byte[] DisplayImage(string imageName)
         {
-            if(id == 0)
+            if(imageName == "")
             {
                 return null;
             }
-            var res = _categoryApiContext.Images.FirstOrDefault(e => e.Id == id);
+            var res = _context.Images.FirstOrDefault(e => e.Name == imageName);
             return res.DataFiles;
 
 
@@ -42,18 +35,16 @@ namespace ShopApi.Repositories
         //POST image
         public async Task<Models.Image> UploadImage(IFormFile file)
         {
-
-            if (file != null)
+            if (!ImageExists(file.FileName))
             {
                 if (file.Length > 0)
                 {
                     var fileName = Path.GetFileName(file.FileName);
                     var fileExtension = Path.GetExtension(fileName);
-                    var newFileName = string.Concat(Convert.ToString(Guid.NewGuid()), fileExtension);
 
                     var objimage = new Models.Image
                     {
-                        Name = newFileName,
+                        Name = fileName,
                         FileType = fileExtension
                     };
 
@@ -63,8 +54,8 @@ namespace ShopApi.Repositories
                         objimage.DataFiles = target.ToArray();
                     }
 
-                    var res = await _categoryApiContext.Images.AddAsync(objimage);
-                    await _categoryApiContext.SaveChangesAsync();
+                    var res = await _context.Images.AddAsync(objimage);
+                    await _context.SaveChangesAsync();
 
                     return res.Entity;
                 }
@@ -73,9 +64,9 @@ namespace ShopApi.Repositories
             return null;
         }
 
-        private bool ImageExists(int id)
+        private bool ImageExists(string imageName)
         {
-            return _categoryApiContext.Images.Any(e => e.Id == id);
+            return _context.Images.Any(e => e.Name == imageName);
         }
     }
 }

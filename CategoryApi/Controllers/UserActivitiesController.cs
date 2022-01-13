@@ -54,20 +54,11 @@ namespace ShopApi.Controllers
 
             _context.Entry(userActivity).State = EntityState.Modified;
 
-            try
+            await _context.SaveChangesAsync();
+
+            if (!UserActivityExists(id))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserActivityExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
             return NoContent();

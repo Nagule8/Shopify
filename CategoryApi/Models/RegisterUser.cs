@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Converters;
-using ShopApi.Entity;
+﻿using ShopApi.Entity;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 

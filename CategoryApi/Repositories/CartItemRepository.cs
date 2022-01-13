@@ -11,54 +11,66 @@ using Newtonsoft.Json;
 
 namespace ShopApi.Services
 {
-    public class CartItemRepository : ICartItemRepository,ICommonRepository<CartItem>
+    public class CartItemRepository : ICartItemRepository, ICommonRepository<CartItem>
     {
-        private readonly CategoryApiContext categoryApiContext;
-        private readonly IDistributedCache cache;
+        private readonly CategoryApiContext _context;
+        private readonly IDistributedCache _cache;
         public CartItemRepository(CategoryApiContext categoryApiContext, IDistributedCache cache)
         {
-            this.categoryApiContext = categoryApiContext;
-            this.cache = cache;
+            _context = categoryApiContext;
+            _cache = cache;
         }
         public async Task<CartItem> Add(CartItem cartItem)
         {
-            var res =await categoryApiContext.CartItems.AddAsync(cartItem);
-            await categoryApiContext.SaveChangesAsync();
+            var res =await _context.CartItems.AddAsync(cartItem);
+            await _context.SaveChangesAsync();
 
             return res.Entity;
         }
 
         public async Task Delete(int id)
         {
-            var result = await categoryApiContext.CartItems
+            var result = await _context.CartItems
                 .FirstOrDefaultAsync(e => e.Id == id);
             if (result != null)
             {
-                categoryApiContext.CartItems.Remove(result);
-                await categoryApiContext.SaveChangesAsync();
+                _context.CartItems.Remove(result);
+                await _context.SaveChangesAsync();
             }
         }
 
         public async Task<CartItem> GetSpecific(int id)
         {
-            var res = await categoryApiContext.CartItems.Include(e=>e.RegisterUser)
+            var cachedData = _cache.GetString("cart-item");
+
+            if (string.IsNullOrEmpty(cachedData))
+            {
+                var res = await _context.CartItems.Include(e => e.RegisterUser)
                 .FirstOrDefaultAsync(e => e.Id == id);
-            return res;
+                var cachedOptions = new DistributedCacheEntryOptions()
+                {
+                    AbsoluteExpiration = DateTime.Now.AddSeconds(30),
+                };
+
+                _cache.SetString("cart-item", JsonConvert.SerializeObject(res), cachedOptions);
+                return res;
+            }
+            else { return JsonConvert.DeserializeObject<CartItem>(cachedData); }
         }
 
         public async Task<IEnumerable<CartItem>> GetCartItems(int userId)
         {
-            var cachedData = cache.GetString("cart-item");
+            var cachedData = _cache.GetString("cart-items");
             if (string.IsNullOrEmpty(cachedData))
             {
-                var res = await categoryApiContext.CartItems.Include(e => e.RegisterUser)
+                var res = await _context.CartItems.Include(e => e.RegisterUser)
                 .Where(x => x.RegisterUserId == userId).ToListAsync();
                 var cachedOptions = new DistributedCacheEntryOptions()
                 {
                     AbsoluteExpiration = DateTime.Now.AddSeconds(30),
                 };
 
-                cache.SetString("cart-item", JsonConvert.SerializeObject(res), cachedOptions);
+                _cache.SetString("cart-items", JsonConvert.SerializeObject(res), cachedOptions);
                 return res;
             }
             else { return JsonConvert.DeserializeObject<IEnumerable<CartItem>>(cachedData); }            
@@ -66,16 +78,16 @@ namespace ShopApi.Services
 
         public async Task<CartItem> GetCartItemByItemId(int itemId)
         {
-            return await categoryApiContext.CartItems.FirstOrDefaultAsync(x => x.ItemId == itemId);
+            return await _context.CartItems.FirstOrDefaultAsync(x => x.ItemId == itemId);
         }
 
         public async Task<CartItem> IncreaseQuantity(int id, int quantity)
         {
-            var cartItem = await categoryApiContext.CartItems.FirstOrDefaultAsync(e => e.Id == id);
+            var cartItem = await _context.CartItems.FirstOrDefaultAsync(e => e.Id == id);
             try
             {
                 cartItem.Quantity = quantity;
-                await categoryApiContext.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 return cartItem;
             }
             catch(DbUpdateConcurrencyException)
@@ -93,7 +105,7 @@ namespace ShopApi.Services
 
         public async Task<CartItem> Update(CartItem cartItem)
         {
-            var result = await categoryApiContext.CartItems
+            var result = await _context.CartItems
                 .FirstOrDefaultAsync(e => e.Id == cartItem.Id);
 
             if(result != null)
@@ -105,7 +117,7 @@ namespace ShopApi.Services
                 result.ImageName = cartItem.ImageName;
                 result.RegisterUserId = cartItem.RegisterUserId;
 
-                await categoryApiContext.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 return result;
             }
 
@@ -118,7 +130,7 @@ namespace ShopApi.Services
         }
         public bool Exists(int id)
         {
-            return categoryApiContext.CartItems.Count(e => e.Id == id) > 0;
+            return _context.CartItems.Count(e => e.Id == id) > 0;
         }
     }
 }

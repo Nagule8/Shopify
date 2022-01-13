@@ -1,7 +1,8 @@
-﻿using System.Drawing;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ShopApi.Authorize;
+using ShopApi.Entity;
 using ShopApi.Helpers;
 using ShopApi.Interface;
 using ShopApi.Models;
@@ -21,15 +22,11 @@ namespace ShopApi.Controllers
         }
 
         //GET: api/Image/id
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<byte[]>> GetImage(int id)
+        [HttpGet("image")]
+        public async Task<ActionResult<byte[]>> GetImage(string imageName)
         {
-            if (id == 0)
-            {
-                return BadRequest();
-            }
 
-            var image = _imageRepository.DisplayImage(id);
+            var image = _imageRepository.DisplayImage(imageName);
 
             return image;
         }
@@ -37,11 +34,13 @@ namespace ShopApi.Controllers
         // POST: api/Images
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost()]
-        public async Task<ActionResult<Models.Image>> PostImage([FromForm]IFormFile image)
+        [Authorize(new[] { Role.SuperSu, Role.Administrator })]
+        public async Task<ActionResult<Image>> PostImage([FromForm]IFormFile image)
         {
             if(image == null)
             {
-                return BadRequest();
+                ModelState.AddModelError("Image","Image is empty");
+                return BadRequest(ModelState);
             }
             var newImage = await _imageRepository.UploadImage(image);
 
