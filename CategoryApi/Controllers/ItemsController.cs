@@ -1,31 +1,27 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ShopApi.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using ShopApi.Interface;
 using Microsoft.Extensions.Caching.Distributed;
-using System.IO;
 using ShopApi.Authorize;
 using ShopApi.Entity;
-using Microsoft.Extensions.Logging;
+using ShopApi.Helpers;
 
 namespace ShopApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(new[] { Role.SuperSu, Role.Administrator })]
+    [ServiceFilter(typeof(UserTracker))]
     public class ItemsController : ControllerBase
     {
         private readonly ICommonRepository<Item> _commonRepository;
         private readonly IItemRepository _itemRepository;
-        private readonly IDistributedCache _cache;
 
-        public ItemsController(ICommonRepository<Item> commonRepository, IItemRepository itemRepository, IDistributedCache cache)
+        public ItemsController(ICommonRepository<Item> commonRepository, IItemRepository itemRepository)
         {
             _commonRepository = commonRepository;
             _itemRepository = itemRepository;
-            _cache = cache;
         }
 
         // GET: api/Items

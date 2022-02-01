@@ -13,7 +13,7 @@ namespace ShopApi.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ServiceFilter(typeof(UserTracker))]
-    [Authorize(new[] { Role.User })]
+    [Authorize(new[] { Role.User, Role.Administrator, Role.SuperSu })]
     public class CartItemsController : ControllerBase
     {
         private readonly ICommonRepository<CartItem> _commonRepository;

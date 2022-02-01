@@ -26,7 +26,11 @@ namespace ShopApi.Controllers
         public async Task<ActionResult<byte[]>> GetImage(string imageName)
         {
 
-            var image = _imageRepository.DisplayImage(imageName);
+            var image =_imageRepository.DisplayImage(imageName);
+            if(image == null)
+            {
+                return NotFound();
+            }
 
             return image;
         }

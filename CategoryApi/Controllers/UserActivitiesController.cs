@@ -1,17 +1,19 @@
 ﻿using System;
+using System.Threading.Tasks;
+using ShopApi.Models;
+using Microsoft.AspNetCore.Mvc;
+using ShopApi.Authorize;
+using ShopApi.Entity;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ShopApi.Data;
-using ShopApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ShopApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(new[] { Role.SuperSu })]
     public class UserActivitiesController : ControllerBase
     {
         private readonly CategoryApiContext _context;
@@ -52,7 +54,7 @@ namespace ShopApi.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(userActivity).State = EntityState.Modified;
+            _context.Entry(userActivity).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
 
             await _context.SaveChangesAsync();
 

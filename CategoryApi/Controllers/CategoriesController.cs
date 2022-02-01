@@ -7,6 +7,7 @@ using ShopApi.Authorize;
 using ShopApi.Entity;
 using ShopApi.Helpers;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ShopApi.Controllers
 {
@@ -37,6 +38,10 @@ namespace ShopApi.Controllers
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
             Category category = await _commonRepository.GetSpecific(id);
+            if(category == null)
+            {
+                return NotFound();
+            }
 
             return Ok(category);
         }
@@ -49,8 +54,9 @@ namespace ShopApi.Controllers
         {
 
             //var categoryToUpdate = await _commonRepository.GetSpecific(id);
+            var result = await _commonRepository.Update(category);
 
-            return await _commonRepository.Update(category);
+            return result;
         }
 
         // POST: api/Categories
@@ -89,6 +95,21 @@ namespace ShopApi.Controllers
                 await _commonRepository.Delete(id);
 
                 return Ok($"Category with id:{id} Deleted.");
+        }
+
+        //TDD purpose
+        //get matching product name
+        [HttpGet("{nameToMatch}")]
+        public async Task<IEnumerable<Category>> GetCategoryMatchingName(string nameToMatch = null)
+        {
+            var categories = (await _commonRepository.Get());
+
+            if (!string.IsNullOrWhiteSpace(nameToMatch))
+            {
+                categories = categories.Where(category => category.Name.Contains(nameToMatch, StringComparison.OrdinalIgnoreCase));
+            }
+
+            return categories;
         }
     }
 }
