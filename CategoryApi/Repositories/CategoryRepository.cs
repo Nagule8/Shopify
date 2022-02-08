@@ -60,7 +60,7 @@ namespace ShopApi.Services
 
         public async Task<Category> Add(Category category)
         {
-                var res =await _context.Categories.AddAsync(category);
+            var res =await _context.Categories.AddAsync(category);
             await _context.SaveChangesAsync();
 
             return res.Entity;
@@ -96,7 +96,7 @@ namespace ShopApi.Services
         public async Task<Category> GetCategoryByName(string name)
         {
             var res = await _context.Categories
-        .FirstOrDefaultAsync(e => e.Name == name);
+                        .FirstOrDefaultAsync(e => e.Name == name);
             try
             {
                 return res;

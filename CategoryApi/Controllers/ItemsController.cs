@@ -64,20 +64,24 @@ namespace ShopApi.Controllers
 
         // POST: api/Items
         [HttpPost]
+
         public async Task<ActionResult<Item>> PostItem(Item item)
         {
+            if (item == null)
+            {
+                return BadRequest();
+            }
 
-                var item1 = await _itemRepository.GetItemBySlug(item.Name);
-                if (item1 != null)
-                {
-                    ModelState.AddModelError("Item", "Item already exist.");
-                    return BadRequest(ModelState);
-                }
-                var newitem = await _commonRepository.Add(item);
+            var item1 = await _itemRepository.GetItemBySlug(item.Name);
+            if (item1 != null)
+            {
+                ModelState.AddModelError("Item", "Item already exist.");
+                return BadRequest(ModelState);
+            }
+            var newitem = await _commonRepository.Add(item);
 
-
-                return CreatedAtAction(nameof(GetItem),
-                    new { id = newitem.Id }, newitem);
+            return CreatedAtAction(nameof(GetItem),
+                new { id = newitem.Id }, newitem);
         }
 
         // DELETE: api/Items/5

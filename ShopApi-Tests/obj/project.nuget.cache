@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "4aGHYGoI0AIYz1CjJmBOYcWbYC9YTbbshqinPDhhnHVzWTQpaIeupWeXG/PThhNySqGNogBM1pbhIP2ZfyAD9Q==",
+  "dgSpecHash": "NuJkDtrwCyN+6MgOrs1QYQppwAxyniWWepEUxlcXv57W6zgLeqBZB/Fv6XD9XdH4zkAdnRwlQFFXWdCji1vQrA==",
   "success": true,
   "projectFilePath": "C:\\Nagul\\OneDrive - CES Limited\\Documents\\Training_Projects\\WebAPI\\ShopApi\\ShopApi-Tests\\ShopApi-Tests.csproj",
   "expectedPackageFiles": [
@@ -34,6 +34,7 @@
     "C:\\Users\\NagulPranaw\\.nuget\\packages\\microsoft.entityframeworkcore\\5.0.13\\microsoft.entityframeworkcore.5.0.13.nupkg.sha512",
     "C:\\Users\\NagulPranaw\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\5.0.13\\microsoft.entityframeworkcore.abstractions.5.0.13.nupkg.sha512",
     "C:\\Users\\NagulPranaw\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\5.0.13\\microsoft.entityframeworkcore.analyzers.5.0.13.nupkg.sha512",
+    "C:\\Users\\NagulPranaw\\.nuget\\packages\\microsoft.entityframeworkcore.inmemory\\5.0.13\\microsoft.entityframeworkcore.inmemory.5.0.13.nupkg.sha512",
     "C:\\Users\\NagulPranaw\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\5.0.12\\microsoft.entityframeworkcore.relational.5.0.12.nupkg.sha512",
     "C:\\Users\\NagulPranaw\\.nuget\\packages\\microsoft.entityframeworkcore.sqlserver\\5.0.12\\microsoft.entityframeworkcore.sqlserver.5.0.12.nupkg.sha512",
     "C:\\Users\\NagulPranaw\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\5.0.0\\microsoft.extensions.caching.abstractions.5.0.0.nupkg.sha512",

@@ -38,6 +38,7 @@ namespace ShopApi.Controllers
 
         // GET: api/RegisterUsers/5
         [HttpGet("{id:int}")]
+        [Authorize(new[] { Role.SuperSu, Role.Administrator, Role.User })]
         public async Task<ActionResult<RegisterUser>> GetRegisterUser(int id)
         {
             RegisterUser registerUser = await _commonRepository.GetSpecific(id);

@@ -80,10 +80,19 @@ namespace ShopApi_Tests
         public async Task CreateItem_WithItemToCreate_ReturnsCreatedItem()
         {
             //Arrange
+            var newItem = new Item()
+            {
+                Name = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                Price = rand.Next(),
+                CategoryId = rand.Next(),
+                ImageName = Guid.NewGuid().ToString()
+            };
+
             var controller = new ItemsController(commonRepositoryStub.Object, itemRepositoryStub.Object);
 
             //Act
-            var result = await controller.PostItem(It.IsAny<Item>());
+            var result = await controller.PostItem(newItem);
 
             //Assert
             Assert.IsType<ActionResult<Item>>(result);

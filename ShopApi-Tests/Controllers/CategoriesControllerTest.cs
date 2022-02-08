@@ -105,11 +105,6 @@ namespace ShopApi_Tests
         public async Task CreateCategory_WithCategoryToCreate_ReturnsCreatedCategory()
         {
             //Arrange
-            var newCategory = new Category()
-            {
-                Name = Guid.NewGuid().ToString()
-            };
-
             var controller = new CategoriesController(commonRepositoryStub.Object, categoryRepositoryStub.Object);
             //Act
             var result = await controller.PostCategory(It.IsAny<Category>());
