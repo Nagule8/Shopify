@@ -1,7 +1,4 @@
-﻿
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Moq;
 using ShopApi.Data;
@@ -208,7 +205,7 @@ namespace ShopApi_Tests.Repositories
             var categoryRepoStub = new CategoryRepository(context, cache.Object);
 
             //Act
-            var res = context.Categories.Count(e => e.Id == existingCategory.Id) > 0;
+            var res = categoryRepoStub.Exists(existingCategory.Id);
 
             //Assert
             Assert.True(res);
@@ -229,7 +226,7 @@ namespace ShopApi_Tests.Repositories
             var categoryRepoStub = new CategoryRepository(context, cache.Object);
 
             //Act
-            var res = context.Categories.Count(e => e.Id == rand.Next(100)) > 0;
+            var res = categoryRepoStub.Exists(rand.Next(100));
 
             //Assert
             Assert.False(res);

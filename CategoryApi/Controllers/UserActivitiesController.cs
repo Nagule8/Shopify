@@ -93,7 +93,7 @@ namespace ShopApi.Controllers
             return NoContent();
         }
 
-        private bool UserActivityExists(int id)
+        public bool UserActivityExists(int id)
         {
             return _context.UserActivity.Any(e => e.Id == id);
         }

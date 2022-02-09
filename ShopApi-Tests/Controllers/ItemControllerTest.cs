@@ -15,6 +15,9 @@ namespace ShopApi_Tests
         private readonly Mock<ICommonRepository<Item>> commonRepositoryStub = new();
         private readonly Mock<IItemRepository> itemRepositoryStub = new();
 
+        private readonly Mock<ICategoryRepository> categoryRepositoryStub = new();
+        private readonly Mock<ICommonRepository<Category>> commonCatRepositoryStub = new();
+
         private readonly Random rand = new();
 
         //Get specific Item test
@@ -77,25 +80,16 @@ namespace ShopApi_Tests
 
         //Create item test
         [Fact]
-        public async Task CreateItem_WithItemToCreate_ReturnsCreatedItem()
+        public async Task CreateItem_WithItemToCreate_ReturnsNull()
         {
             //Arrange
-            var newItem = new Item()
-            {
-                Name = Guid.NewGuid().ToString(),
-                Description = Guid.NewGuid().ToString(),
-                Price = rand.Next(),
-                CategoryId = rand.Next(),
-                ImageName = Guid.NewGuid().ToString()
-            };
-
             var controller = new ItemsController(commonRepositoryStub.Object, itemRepositoryStub.Object);
 
             //Act
-            var result = await controller.PostItem(newItem);
+            var result = await controller.PostItem(null);
 
             //Assert
-            Assert.IsType<ActionResult<Item>>(result);
+            Assert.Null(result.Value);
         }
 
         //Update category test

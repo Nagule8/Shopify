@@ -11,15 +11,19 @@ namespace ShopApi.Services
     public class UserRepository : IUserRepository,ICommonRepository<RegisterUser>
     {
         private readonly CategoryApiContext _context;
+
         public UserRepository(CategoryApiContext context)
         {
             _context = context;
         }
+
+        //Get list of users
         public async Task<IEnumerable<RegisterUser>> Get()
         {
             return await _context.RegisterUsers.ToListAsync();
         }
 
+        //Get specific user
         public async Task<RegisterUser> GetSpecific(int id)
         {
             var res = await _context.RegisterUsers
@@ -27,6 +31,8 @@ namespace ShopApi.Services
             return res;
 
         }
+
+        //Get user id
         public async Task<int> GetUserId(string username)
         {
             RegisterUser registerUser = await _context.RegisterUsers
@@ -41,6 +47,7 @@ namespace ShopApi.Services
 
         }
 
+        //Get user by username
         public async  Task<RegisterUser> GetUserByName(string username)
         {
             var res = await _context.RegisterUsers
@@ -50,6 +57,7 @@ namespace ShopApi.Services
 
         }
 
+        //Add new user
         public async Task<RegisterUser> Add(RegisterUser user)
         {
             var user1 = new RegisterUser
@@ -64,6 +72,8 @@ namespace ShopApi.Services
 
             return res.Entity;
         }
+
+        //Update Existing user
         public async Task<RegisterUser> Update(RegisterUser user)
         {
             var result = await _context.RegisterUsers
@@ -82,6 +92,8 @@ namespace ShopApi.Services
 
             return null;
         }
+
+        //Delete User
         public async Task Delete(int id)
         {
             var result = await _context.RegisterUsers

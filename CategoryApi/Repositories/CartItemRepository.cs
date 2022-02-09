@@ -20,6 +20,8 @@ namespace ShopApi.Services
             _context = categoryApiContext;
             _cache = cache;
         }
+
+        //Add item in the cart
         public async Task<CartItem> Add(CartItem cartItem)
         {
             var res =await _context.CartItems.AddAsync(cartItem);
@@ -28,6 +30,7 @@ namespace ShopApi.Services
             return res.Entity;
         }
 
+        //Delete Cart item
         public async Task Delete(int id)
         {
             var result = await _context.CartItems
@@ -39,6 +42,7 @@ namespace ShopApi.Services
             }
         }
 
+        //Get specific cart item
         public async Task<CartItem> GetSpecific(int id)
         {
             var cachedData = _cache.GetString("cart-item");
@@ -58,6 +62,7 @@ namespace ShopApi.Services
             else { return JsonConvert.DeserializeObject<CartItem>(cachedData); }
         }
 
+        //Get cart items
         public async Task<IEnumerable<CartItem>> GetCartItems(int userId)
         {
             var cachedData = _cache.GetString("cart-items");
@@ -76,11 +81,13 @@ namespace ShopApi.Services
             else { return JsonConvert.DeserializeObject<IEnumerable<CartItem>>(cachedData); }            
         }
 
+        //Get cart item by item id
         public async Task<CartItem> GetCartItemByItemId(int itemId)
         {
             return await _context.CartItems.FirstOrDefaultAsync(x => x.ItemId == itemId);
         }
 
+        //Increase Quantity
         public async Task<CartItem> IncreaseQuantity(int id, int quantity)
         {
             var cartItem = await _context.CartItems.FirstOrDefaultAsync(e => e.Id == id);
@@ -103,6 +110,7 @@ namespace ShopApi.Services
             }
         }
 
+        //Update Cart Item
         public async Task<CartItem> Update(CartItem cartItem)
         {
             var result = await _context.CartItems
@@ -124,10 +132,12 @@ namespace ShopApi.Services
             return null;
         }
 
+        //Not IMplemented
         public Task<IEnumerable<CartItem>> Get()
         {
             throw new NotImplementedException();
         }
+
         public bool Exists(int id)
         {
             return _context.CartItems.Count(e => e.Id == id) > 0;

@@ -64,7 +64,7 @@ namespace ShopApi.Repositories
             return null;
         }
 
-        private bool ImageExists(string imageName)
+        public bool ImageExists(string imageName)
         {
             return _context.Images.Any(e => e.Name == imageName);
         }
