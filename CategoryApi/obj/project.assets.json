@@ -17,6 +17,27 @@
           "jQuery": "[1.9.1, 4.0.0)"
         }
       },
+      "Castle.Core/4.4.0": {
+        "type": "package",
+        "dependencies": {
+          "NETStandard.Library": "1.6.1",
+          "System.Collections.Specialized": "4.3.0",
+          "System.ComponentModel": "4.3.0",
+          "System.ComponentModel.TypeConverter": "4.3.0",
+          "System.Diagnostics.TraceSource": "4.3.0",
+          "System.Dynamic.Runtime": "4.3.0",
+          "System.Reflection": "4.3.0",
+          "System.Reflection.Emit": "4.3.0",
+          "System.Reflection.TypeExtensions": "4.3.0",
+          "System.Xml.XmlDocument": "4.3.0"
+        },
+        "compile": {
+          "lib/netstandard1.5/Castle.Core.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.5/Castle.Core.dll": {}
+        }
+      },
       "EntityFramework/6.4.4": {
         "type": "package",
         "dependencies": {
@@ -38,6 +59,21 @@
           "buildTransitive/netcoreapp3.0/EntityFramework.props": {},
           "buildTransitive/netcoreapp3.0/EntityFramework.targets": {}
         }
+      },
+      "HttpContextMoq/1.2.1": {
+        "type": "package",
+        "dependencies": {
+          "Moq": "4.16.1"
+        },
+        "compile": {
+          "lib/net5.0/HttpContextMoq.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/HttpContextMoq.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
       },
       "Humanizer.Core/2.8.26": {
         "type": "package",
@@ -1151,6 +1187,19 @@
       "Modernizr/2.8.3": {
         "type": "package"
       },
+      "Moq/4.16.1": {
+        "type": "package",
+        "dependencies": {
+          "Castle.Core": "4.4.0",
+          "System.Threading.Tasks.Extensions": "4.5.4"
+        },
+        "compile": {
+          "lib/netstandard2.1/Moq.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.1/Moq.dll": {}
+        }
+      },
       "NETStandard.Library/1.6.1": {
         "type": "package",
         "dependencies": {
@@ -1740,7 +1789,7 @@
           "System.Threading": "4.3.0"
         },
         "compile": {
-          "ref/netstandard1.3/_._": {}
+          "ref/netstandard1.3/System.Collections.Specialized.dll": {}
         },
         "runtime": {
           "lib/netstandard1.3/System.Collections.Specialized.dll": {}
@@ -2049,6 +2098,33 @@
         },
         "compile": {
           "ref/netstandard1.0/System.Diagnostics.Tools.dll": {}
+        }
+      },
+      "System.Diagnostics.TraceSource/4.3.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.Collections": "4.3.0",
+          "System.Diagnostics.Debug": "4.3.0",
+          "System.Globalization": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Threading": "4.3.0",
+          "runtime.native.System": "4.3.0"
+        },
+        "compile": {
+          "ref/netstandard1.3/System.Diagnostics.TraceSource.dll": {}
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/netstandard1.3/System.Diagnostics.TraceSource.dll": {
+            "assetType": "runtime",
+            "rid": "unix"
+          },
+          "runtimes/win/lib/netstandard1.3/System.Diagnostics.TraceSource.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          }
         }
       },
       "System.Diagnostics.Tracing/4.3.0": {
@@ -2503,7 +2579,7 @@
           "System.Runtime": "4.3.0"
         },
         "compile": {
-          "ref/netstandard1.1/_._": {}
+          "ref/netstandard1.1/System.Reflection.Emit.dll": {}
         },
         "runtime": {
           "lib/netstandard1.3/System.Reflection.Emit.dll": {}
@@ -2517,7 +2593,7 @@
           "System.Runtime": "4.3.0"
         },
         "compile": {
-          "ref/netstandard1.0/_._": {}
+          "ref/netstandard1.0/System.Reflection.Emit.ILGeneration.dll": {}
         },
         "runtime": {
           "lib/netstandard1.3/System.Reflection.Emit.ILGeneration.dll": {}
@@ -3383,6 +3459,31 @@
         "contentFiles/fonts/glyphicons-halflings-regular.woff2"
       ]
     },
+    "Castle.Core/4.4.0": {
+      "sha512": "b5rRL5zeaau1y/5hIbI+6mGw3cwun16YjkHZnV9RRT5UyUIFsgLmNXJ0YnIN9p8Hw7K7AbG1q1UclQVU3DinAQ==",
+      "type": "package",
+      "path": "castle.core/4.4.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "ASL - Apache Software Foundation License.txt",
+        "CHANGELOG.md",
+        "LICENSE",
+        "castle.core.4.4.0.nupkg.sha512",
+        "castle.core.nuspec",
+        "lib/net35/Castle.Core.dll",
+        "lib/net35/Castle.Core.xml",
+        "lib/net40/Castle.Core.dll",
+        "lib/net40/Castle.Core.xml",
+        "lib/net45/Castle.Core.dll",
+        "lib/net45/Castle.Core.xml",
+        "lib/netstandard1.3/Castle.Core.dll",
+        "lib/netstandard1.3/Castle.Core.xml",
+        "lib/netstandard1.5/Castle.Core.dll",
+        "lib/netstandard1.5/Castle.Core.xml",
+        "readme.txt"
+      ]
+    },
     "EntityFramework/6.4.4": {
       "sha512": "yj1+/4tci7Panu3jKDHYizxwVm0Jvm7b7m057b5h4u8NUHGCR8WIWirBTw+8EptRffwftIWPBeIRGNKD1ewEMQ==",
       "type": "package",
@@ -3438,6 +3539,54 @@
         "tools/netcoreapp3.0/any/ef6.dll",
         "tools/netcoreapp3.0/any/ef6.pdb",
         "tools/netcoreapp3.0/any/ef6.runtimeconfig.json"
+      ]
+    },
+    "HttpContextMoq/1.2.1": {
+      "sha512": "WE4OFtY01Kes8dXAODh/ewyuLz27N6rOsB7dF+96lPyp3cnawjx3XfnZdEesLuM/r2+zyHRDvRXmtNXG6sOJ+w==",
+      "type": "package",
+      "path": "httpcontextmoq/1.2.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "httpcontextmoq.1.2.1.nupkg.sha512",
+        "httpcontextmoq.nuspec",
+        "lib/net5.0/HttpContextMoq.dll",
+        "lib/net5.0/HttpContextMoq.pdb",
+        "lib/netcoreapp3.0/HttpContextMoq.dll",
+        "lib/netcoreapp3.0/HttpContextMoq.pdb",
+        "lib/netcoreapp3.1/HttpContextMoq.dll",
+        "lib/netcoreapp3.1/HttpContextMoq.pdb",
+        "lib/netstandard2.0/HttpContextMoq.dll",
+        "lib/netstandard2.0/HttpContextMoq.pdb",
+        "lib/netstandard2.1/HttpContextMoq.dll",
+        "lib/netstandard2.1/HttpContextMoq.pdb",
+        "src/HttpContextMoq/ClaimsIdentityMock.cs",
+        "src/HttpContextMoq/ClaimsPrincipalMock.cs",
+        "src/HttpContextMoq/ConnectionInfoMock.cs",
+        "src/HttpContextMoq/Extensions/ContextExtensions.cs",
+        "src/HttpContextMoq/FeatureCollectionMock.cs",
+        "src/HttpContextMoq/FormCollectionMock.cs",
+        "src/HttpContextMoq/FormFileCollectionMock.cs",
+        "src/HttpContextMoq/Generic/IContextMock.cs",
+        "src/HttpContextMoq/Generic/IContextMocks.cs",
+        "src/HttpContextMoq/Generic/MockCollection.cs",
+        "src/HttpContextMoq/HeaderDictionaryFake.cs",
+        "src/HttpContextMoq/HeaderDictionaryMock.cs",
+        "src/HttpContextMoq/HttpContextAccessorMock.cs",
+        "src/HttpContextMoq/HttpContextMock.cs",
+        "src/HttpContextMoq/HttpContextMoq.csproj",
+        "src/HttpContextMoq/HttpRequestMock.cs",
+        "src/HttpContextMoq/HttpResponseMock.cs",
+        "src/HttpContextMoq/ItemsDictionaryFake.cs",
+        "src/HttpContextMoq/ItemsDictionaryMock.cs",
+        "src/HttpContextMoq/QueryCollectionFake.cs",
+        "src/HttpContextMoq/QueryCollectionMock.cs",
+        "src/HttpContextMoq/RequestCookieCollectionFake.cs",
+        "src/HttpContextMoq/RequestCookieCollectionMock.cs",
+        "src/HttpContextMoq/ResponseCookiesMock.cs",
+        "src/HttpContextMoq/ServiceProviderMock.cs",
+        "src/HttpContextMoq/SessionFeatureFake.cs",
+        "src/HttpContextMoq/SessionMock.cs"
       ]
     },
     "Humanizer.Core/2.8.26": {
@@ -5581,6 +5730,24 @@
         "modernizr.nuspec"
       ]
     },
+    "Moq/4.16.1": {
+      "sha512": "bw3R9q8cVNhWXNpnvWb0OGP4HadS4zvClq+T1zf7AF+tLY1haZ2AvbHidQekf4PDv1T40c6brZeT/V0IBq7cEQ==",
+      "type": "package",
+      "path": "moq/4.16.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net45/Moq.dll",
+        "lib/net45/Moq.xml",
+        "lib/netstandard2.0/Moq.dll",
+        "lib/netstandard2.0/Moq.xml",
+        "lib/netstandard2.1/Moq.dll",
+        "lib/netstandard2.1/Moq.xml",
+        "moq.4.16.1.nupkg.sha512",
+        "moq.nuspec",
+        "moq.png"
+      ]
+    },
     "NETStandard.Library/1.6.1": {
       "sha512": "WcSp3+vP+yHNgS8EV5J7pZ9IRpeDuARBPN28by8zqff1wJQXm26PVU8L3/fYLBJVU7BtDyqNVWq2KlCVvSSR4A==",
       "type": "package",
@@ -7258,6 +7425,47 @@
         "ref/xamarinwatchos10/_._",
         "system.diagnostics.tools.4.3.0.nupkg.sha512",
         "system.diagnostics.tools.nuspec"
+      ]
+    },
+    "System.Diagnostics.TraceSource/4.3.0": {
+      "sha512": "VnYp1NxGx8Ww731y2LJ1vpfb/DKVNKEZ8Jsh5SgQTZREL/YpWRArgh9pI8CDLmgHspZmLL697CaLvH85qQpRiw==",
+      "type": "package",
+      "path": "system.diagnostics.tracesource/4.3.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net46/System.Diagnostics.TraceSource.dll",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net46/System.Diagnostics.TraceSource.dll",
+        "ref/netstandard1.3/System.Diagnostics.TraceSource.dll",
+        "ref/netstandard1.3/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/de/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/es/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/fr/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/it/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/ja/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/ko/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/ru/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/zh-hans/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/zh-hant/System.Diagnostics.TraceSource.xml",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._",
+        "runtimes/unix/lib/netstandard1.3/System.Diagnostics.TraceSource.dll",
+        "runtimes/win/lib/net46/System.Diagnostics.TraceSource.dll",
+        "runtimes/win/lib/netstandard1.3/System.Diagnostics.TraceSource.dll",
+        "system.diagnostics.tracesource.4.3.0.nupkg.sha512",
+        "system.diagnostics.tracesource.nuspec"
       ]
     },
     "System.Diagnostics.Tracing/4.3.0": {
@@ -10851,6 +11059,7 @@
     "net5.0": [
       "BCrypt.Net-Next >= 4.0.2",
       "EntityFramework >= 6.4.4",
+      "HttpContextMoq >= 1.2.1",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 5.0.12",
       "Microsoft.CodeAnalysis.Analyzers >= 3.3.3",
       "Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers >= 0.3.246501",
@@ -10926,6 +11135,10 @@
           "EntityFramework": {
             "target": "Package",
             "version": "[6.4.4, )"
+          },
+          "HttpContextMoq": {
+            "target": "Package",
+            "version": "[1.2.1, )"
           },
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
             "target": "Package",

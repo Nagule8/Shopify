@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "NuJkDtrwCyN+6MgOrs1QYQppwAxyniWWepEUxlcXv57W6zgLeqBZB/Fv6XD9XdH4zkAdnRwlQFFXWdCji1vQrA==",
+  "dgSpecHash": "JrG/wesVSVe58RE+DT9G1tw9egutrEv86CTkYtK4t0RoO0fy9MeM5cwWUg8xkpDDSAx3pvB7LoGD63ASbQaXhg==",
   "success": true,
   "projectFilePath": "C:\\Nagul\\OneDrive - CES Limited\\Documents\\Training_Projects\\WebAPI\\ShopApi\\ShopApi-Tests\\ShopApi-Tests.csproj",
   "expectedPackageFiles": [
@@ -10,6 +10,7 @@
     "C:\\Users\\NagulPranaw\\.nuget\\packages\\coverlet.collector\\3.0.2\\coverlet.collector.3.0.2.nupkg.sha512",
     "C:\\Users\\NagulPranaw\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",
     "C:\\Users\\NagulPranaw\\.nuget\\packages\\fluentassertions\\5.10.3\\fluentassertions.5.10.3.nupkg.sha512",
+    "C:\\Users\\NagulPranaw\\.nuget\\packages\\httpcontextmoq\\1.2.1\\httpcontextmoq.1.2.1.nupkg.sha512",
     "C:\\Users\\NagulPranaw\\.nuget\\packages\\humanizer.core\\2.2.0\\humanizer.core.2.2.0.nupkg.sha512",
     "C:\\Users\\NagulPranaw\\.nuget\\packages\\jquery\\3.4.1\\jquery.3.4.1.nupkg.sha512",
     "C:\\Users\\NagulPranaw\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\5.0.12\\microsoft.aspnetcore.cryptography.internal.5.0.12.nupkg.sha512",

@@ -97,9 +97,27 @@ namespace ShopApi_Tests
 
         }
 
+        //Get user id test
+        [Fact]
+        public async Task GetUserId_WithoutExistingUser_ReturnsNotFound()
+        {
+            //Arrange
+            var userName = Guid.NewGuid().ToString();
+            userRepositoryStub.Setup(repo => repo.GetUserId(userName)).ReturnsAsync(It.IsAny<int>());
+
+            var controller = new RegisterUsersController(commonRepositoryStub.Object, userRepositoryStub.Object, jwtUtils.Object);
+
+            //Act
+            var result = await controller.GetUserId(Guid.NewGuid().ToString());
+
+            //Assert
+            result.Result.Should().BeOfType<NotFoundResult>();
+
+        }
+
         //Login user test
         [Fact]
-        public async Task LoginUser_WithExistingUser()
+        public async Task LoginUser_WithExistingUser_ReturnsSuccessMessgae()
         {
             //Arrange
             LoginDto loginDto = new LoginDto()
@@ -108,7 +126,36 @@ namespace ShopApi_Tests
                 Password = Guid.NewGuid().ToString()
             };
 
-            //userRepositoryStub.Setup(repo => repo.GetUserByName(loginDto.Name)).Returns(It.IsAny<string>());
+            userRepositoryStub.Setup(repo => repo.GetUserByName(loginDto.Name)).ReturnsAsync(It.IsAny<RegisterUser>());
+            var controller = new RegisterUsersController(commonRepositoryStub.Object, userRepositoryStub.Object, jwtUtils.Object);
+
+            //Act
+            var result = await controller.Login(loginDto);
+
+            //Assert
+            Assert.IsAssignableFrom<IActionResult>(result);
+        }
+
+        //Login user test
+        [Fact]
+        public async Task LoginUser_WithoutExistingUser_ReturnsBadRequestObjectResult()
+        {
+            //Arrange
+            LoginDto loginDto = new LoginDto()
+            {
+                Name = Guid.NewGuid().ToString(),
+                Password = Guid.NewGuid().ToString()
+            };
+
+            userRepositoryStub.Setup(repo => repo.GetUserByName(loginDto.Name)).ReturnsAsync((RegisterUser)null);
+
+            var controller = new RegisterUsersController(commonRepositoryStub.Object, userRepositoryStub.Object, jwtUtils.Object);
+
+            //Act
+            var result = await controller.Login(loginDto);
+
+            //Assert
+            Assert.IsAssignableFrom<BadRequestObjectResult>(result);
         }
 
         //Create users test
@@ -123,6 +170,34 @@ namespace ShopApi_Tests
             
             //Assert
             Assert.IsType<ActionResult<RegisterUser>>(result);
+        }
+
+        //Create users test
+        [Fact]
+        public async Task CreateUser_WithoutUserToCreate_ReturnBadRequest()
+        {
+            //Arrange
+            var controller = new RegisterUsersController(commonRepositoryStub.Object, userRepositoryStub.Object, jwtUtils.Object);
+
+            //Act
+            var result = await controller.PostRegisterUser(null);
+
+            //Assert
+            result.Result.Should().BeOfType<BadRequestResult>();
+        }
+
+        //Create users test
+        [Fact]
+        public async Task CreateUser_WithoutUserToCreate_ReturnBadRequestModelState()
+        {
+            //Arrange
+            var controller = new RegisterUsersController(commonRepositoryStub.Object, userRepositoryStub.Object, jwtUtils.Object);
+
+            //Act
+            var result = await controller.PostRegisterUser(It.IsAny<RegisterUser>());
+
+            //Assert
+            result.Result.Should().BeOfType<BadRequestResult>();
         }
 
         //Update users test
@@ -143,6 +218,42 @@ namespace ShopApi_Tests
             Assert.IsType<ActionResult<RegisterUser>>(result);
         }
 
+        //Update users test
+        [Fact]
+        public async Task UpdateUser_WithExistingUser_ReturnsBadRequestResult()
+        {
+            //Arrange
+            RegisterUser existingUser = RandomUser();
+            commonRepositoryStub.Setup(repo => repo.GetSpecific(It.IsAny<int>())).ReturnsAsync(existingUser);
+
+            var userId = existingUser.Id;
+            var userToUpdate = existingUser;
+
+            var controller = new RegisterUsersController(commonRepositoryStub.Object, userRepositoryStub.Object, jwtUtils.Object);
+            //Act
+            var result = await controller.PutRegisterUser(rand.Next(100), userToUpdate);
+            //Assert
+            result.Result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        //Update users test
+        [Fact]
+        public async Task UpdateUser_WithExistingUser_ReturnsNotFoundResult()
+        {
+            //Arrange
+            RegisterUser existingUser = RandomUser();
+            commonRepositoryStub.Setup(repo => repo.GetSpecific(It.IsAny<int>())).ReturnsAsync((RegisterUser)null);
+
+            var userId = existingUser.Id;
+            var userToUpdate = existingUser;
+
+            var controller = new RegisterUsersController(commonRepositoryStub.Object, userRepositoryStub.Object, jwtUtils.Object);
+            //Act
+            var result = await controller.PutRegisterUser(userId, userToUpdate);
+            //Assert
+            result.Result.Should().BeOfType<NotFoundObjectResult>();
+        }
+
         //Delete users test
         [Fact]
         public async Task DeleteUser_WithExistingUser_ReturnsDeletedUser()
@@ -158,6 +269,23 @@ namespace ShopApi_Tests
 
             //Assert
             Assert.IsType<OkObjectResult>(result);
+        }
+
+        //Delete users test
+        [Fact]
+        public async Task DeleteUser_WithoutExistingUser_ReturnsDeletedNotFoundResult()
+        {
+            //Arrange
+            RegisterUser existingUser = RandomUser();
+            commonRepositoryStub.Setup(repo => repo.GetSpecific(It.IsAny<int>())).ReturnsAsync((RegisterUser)null);
+
+            var controller = new RegisterUsersController(commonRepositoryStub.Object, userRepositoryStub.Object, jwtUtils.Object);
+
+            //Act
+            var result = await controller.DeleteRegisterUser(existingUser.Id);
+
+            //Assert
+            Assert.IsType<NotFoundObjectResult>(result);
         }
 
         private RegisterUser RandomUser()

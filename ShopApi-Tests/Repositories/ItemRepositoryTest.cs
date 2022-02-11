@@ -180,7 +180,7 @@ namespace ShopApi_Tests.Repositories
 
             var ItemToUpdate = new Item()
             {
-                Id = 1,
+                Id = rand.Next(100),
                 Name = Guid.NewGuid().ToString()
             };
 
@@ -191,7 +191,6 @@ namespace ShopApi_Tests.Repositories
 
             //Assert
             Assert.Null(result);
-
         }
 
         //Delete Item test

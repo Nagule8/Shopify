@@ -189,3 +189,6 @@ C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\ShopApi\Categ
 C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\ShopApi\CategoryApi\bin\net5.0\System.Drawing.Common.dll
 C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\ShopApi\CategoryApi\bin\net5.0\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
 C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\ShopApi\CategoryApi\bin\net5.0\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
+C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\ShopApi\CategoryApi\bin\net5.0\Castle.Core.dll
+C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\ShopApi\CategoryApi\bin\net5.0\HttpContextMoq.dll
+C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\ShopApi\CategoryApi\bin\net5.0\Moq.dll

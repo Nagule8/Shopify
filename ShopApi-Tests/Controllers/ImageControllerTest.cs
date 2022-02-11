@@ -49,7 +49,7 @@ namespace ShopApi_Tests
 
             //Act
             var result = await controller.GetImage(Guid.NewGuid().ToString());
-
+            
             //Assert
             Assert.IsType<ActionResult<byte[]>>(result);
             /*Assert.IsType<Item>(result.Value);
@@ -71,6 +71,20 @@ namespace ShopApi_Tests
 
             //Assert
             Assert.IsType<ActionResult<Image>>(result);
+        }
+
+        //Create Image test
+        [Fact]
+        public async Task CreateImage_WithoutImageToCreate_ReturnsCreatedImage()
+        {
+            //Arrange
+            var controller = new ImagesController(imageRepositoryStub.Object);
+
+            //Act
+            var result = await controller.PostImage(null);
+
+            //Assert
+            result.Result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         private Image RandomImage()

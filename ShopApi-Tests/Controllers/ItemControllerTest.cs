@@ -92,6 +92,34 @@ namespace ShopApi_Tests
             Assert.Null(result.Value);
         }
 
+        //Create item test
+        [Fact]
+        public async Task CreatItem_WithoutItemToCreate_ReturnBadRequest()
+        {
+            //Arrange
+            var controller = new ItemsController(commonRepositoryStub.Object, itemRepositoryStub.Object);
+
+            //Act
+            var result = await controller.PostItem((Item)null);
+
+            //Assert
+            result.Result.Should().BeOfType<BadRequestResult>();
+        }
+
+        //Create item test
+        [Fact]
+        public async Task Creatcategory_WithoutcategoryToCreate_ReturnBadRequestModelState()
+        {
+            //Arrange
+            var controller = new ItemsController(commonRepositoryStub.Object, itemRepositoryStub.Object);
+
+            //Act
+            var result = await controller.PostItem(It.IsAny<Item>());
+
+            //Assert
+            result.Result.Should().BeOfType<BadRequestResult>();
+        }
+
         //Update category test
         [Fact]
         public async Task UpdateItem_WithExistingItem_ReturnsUpdatedItem()
@@ -106,6 +134,24 @@ namespace ShopApi_Tests
             var controller = new ItemsController(commonRepositoryStub.Object, itemRepositoryStub.Object);
             //Act
             var result = await controller.PutItem(itemId, itemToUpdate);
+            //Assert
+            Assert.IsType<ActionResult<Item>>(result);
+        }
+
+        //Update category test
+        [Fact]
+        public async Task UpdateItem_WithoutExistingItem_ReturnsNotFoundObjectResult()
+        {
+            //Arrange
+            Item existingItem = RandomItem();
+            commonRepositoryStub.Setup(repo => repo.GetSpecific(It.IsAny<int>())).ReturnsAsync(existingItem);
+
+            var itemId = existingItem.Id;
+            var itemToUpdate = RandomItem();
+
+            var controller = new ItemsController(commonRepositoryStub.Object, itemRepositoryStub.Object);
+            //Act
+            var result = await controller.PutItem(rand.Next(100), itemToUpdate);
             //Assert
             Assert.IsType<ActionResult<Item>>(result);
         }
@@ -125,6 +171,23 @@ namespace ShopApi_Tests
 
             //Assert
             Assert.IsType<ActionResult<Item>>(result);
+        }
+
+        //Delete category test
+        [Fact]
+        public async Task DeleteItem_WithExistingItem_ReturnsNotFOund()
+        {
+            //Arrange
+            Item existingItem = RandomItem();
+            commonRepositoryStub.Setup(repo => repo.GetSpecific(It.IsAny<int>())).ReturnsAsync((Item)null);
+
+            var controller = new ItemsController(commonRepositoryStub.Object, itemRepositoryStub.Object);
+
+            //Act
+            var result = await controller.DeleteItem(existingItem.Id);
+
+            //Assert
+            result.Result.Should().BeOfType<NotFoundObjectResult>();
         }
 
         private Item RandomItem()

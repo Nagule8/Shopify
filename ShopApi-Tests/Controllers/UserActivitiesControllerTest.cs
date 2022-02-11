@@ -120,26 +120,6 @@ namespace ShopApi_Tests.Controllers
 
         //Update user activity Test
         [Fact]
-        public async Task UpdateUserActivity_WithoutExistingUserActivity_ReturnNotFound()
-        {
-            //Arrange
-            var userActivities = RandomUserActivity();
-
-            context.UserActivity.Add(RandomUserActivity());
-            await context.SaveChangesAsync();
-
-            var controller = new UserActivitiesController(context);
-
-            //Act
-            var result = await controller.PutUserActivity(userActivities.Id, userActivities);
-
-            //Assert
-            Assert.IsType<NoContentResult>(result);
-
-        }
-
-        //Update user activity Test
-        [Fact]
         public async Task UpdateUserActivity_WithoutExistingUserActivity_ReturnsBadRequest()
         {
             //Arrange

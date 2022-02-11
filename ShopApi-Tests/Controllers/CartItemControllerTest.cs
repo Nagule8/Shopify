@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using ShopApi.Controllers;
@@ -10,7 +11,7 @@ using Xunit;
 
 namespace ShopApi_Tests
 {
-    public class CartItemTest
+    public class CartItemControllerTest
     {
         private readonly Mock<ICommonRepository<CartItem>> commonRepositoryStub = new();
         private readonly Mock<ICartItemRepository> cartItemRepositoryStub = new();
@@ -59,22 +60,6 @@ namespace ShopApi_Tests
             Assert.Equal(expectedItem.Name, dto.Name);*/
         }
 
-        //Get all cart items test
-        [Fact]
-        public async Task GetCartItems_WithExistingCartItem_ReturnsAllCategory()
-        {
-            //Arrange
-            var expectedItems = new[] { RandomCartItem(), RandomCartItem(), RandomCartItem() };
-
-            cartItemRepositoryStub.Setup(repo => repo.GetCartItems(It.IsAny<int>())).ReturnsAsync(expectedItems);
-
-            var controller = new CartItemsController(commonRepositoryStub.Object, cartItemRepositoryStub.Object, jwtUtils.Object);
-            //Act
-            var cartItems = await controller.GetCartItems();
-            //Assert
-            Assert.IsType<OkObjectResult>(cartItems);
-        }
-
         //Create cart item test
         [Fact]
         public async Task CreateCartItem_WithCartItemToCreate_ReturnsCreatedCartItem()
@@ -87,6 +72,34 @@ namespace ShopApi_Tests
             
             //Assert
             Assert.IsType<ActionResult<CartItem>>(result);
+        }
+
+        //Create Cart tiem test
+        [Fact]
+        public async Task CreatCartItem_WithoutCartItemToCreate_ReturnBadRequest()
+        {
+            //Arrange
+            var controller = new CartItemsController(commonRepositoryStub.Object, cartItemRepositoryStub.Object, jwtUtils.Object);
+
+            //Act
+            var result = await controller.PostCartItem((CartItem)null);
+
+            //Assert
+            result.Result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        //Create cart item test
+        [Fact]
+        public async Task CreatCartItem_WithoutCartItemToCreate_ReturnBadRequestModelState()
+        {
+            //Arrange
+            var controller = new CartItemsController(commonRepositoryStub.Object, cartItemRepositoryStub.Object, jwtUtils.Object);
+
+            //Act
+            var result = await controller.PostCartItem(It.IsAny<CartItem>());
+
+            //Assert
+            result.Result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         //Update cart item test
@@ -105,6 +118,42 @@ namespace ShopApi_Tests
             var result = await controller.PutCartItem(itemId, itemToUpdate);
             //Assert
             Assert.IsType<ActionResult<CartItem>>(result);
+        }
+
+        //Update Cart item test
+        [Fact]
+        public async Task UpdateCartItem_WithoutCartItemToCreate_ReturnsBadRequestResult()
+        {
+            //Arrange
+            CartItem existingItem = RandomCartItem();
+            commonRepositoryStub.Setup(repo => repo.GetSpecific(It.IsAny<int>())).ReturnsAsync(existingItem);
+
+            var userId = existingItem.Id;
+            var userToUpdate = existingItem;
+
+            var controller = new CartItemsController(commonRepositoryStub.Object, cartItemRepositoryStub.Object, jwtUtils.Object);
+            //Act
+            var result = await controller.PutCartItem(rand.Next(100), userToUpdate);
+            //Assert
+            result.Result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        //Update Cart item test
+        [Fact]
+        public async Task UpdateCartItem_WithoutCartItemToCreate_ReturnsNotFoundResult()
+        {
+            //Arrange
+            CartItem existingItem = RandomCartItem();
+            commonRepositoryStub.Setup(repo => repo.GetSpecific(It.IsAny<int>())).ReturnsAsync((CartItem)null);
+
+            var userId = existingItem.Id;
+            var userToUpdate = existingItem;
+
+            var controller = new CartItemsController(commonRepositoryStub.Object, cartItemRepositoryStub.Object, jwtUtils.Object);
+            //Act
+            var result = await controller.PutCartItem(userId, userToUpdate);
+            //Assert
+            result.Result.Should().BeOfType<NotFoundObjectResult>();
         }
 
         //Increase cart item test
@@ -130,7 +179,7 @@ namespace ShopApi_Tests
 
         //Delete cart item test
         [Fact]
-        public async Task DeleteItem_WithExistingItem_ReturnsDeletedItem()
+        public async Task DeleteCartItem_WithExistingCartItem_ReturnsDeletedItem()
         {
             //Arrange
             CartItem existingItem = RandomCartItem();
@@ -145,6 +194,23 @@ namespace ShopApi_Tests
             Assert.IsType<ActionResult<CartItem>>(result);
         }
 
+        //Delete Cart item test
+        [Fact]
+        public async Task DeleteCartItem_WithExistingCartItem_ReturnsNotFoundObjectResult()
+        {
+            //Arrange
+            CartItem existingItem = RandomCartItem();
+            commonRepositoryStub.Setup(repo => repo.GetSpecific(It.IsAny<int>())).ReturnsAsync((CartItem)null);
+
+            var controller = new CartItemsController(commonRepositoryStub.Object, cartItemRepositoryStub.Object, jwtUtils.Object);
+
+            //Act
+            var result = await controller.DeleteCartItem(existingItem.Id);
+
+            //Assert
+            result.Result.Should().BeOfType<NotFoundObjectResult>();
+        }
+
         private CartItem RandomCartItem()
         {
             return new()
@@ -156,6 +222,18 @@ namespace ShopApi_Tests
                 Price = rand.Next(),
                 ImageName = Guid.NewGuid().ToString(),
                 RegisterUserId = rand.Next(100)
+            };
+        }
+
+        private RegisterUser RandomUser()
+        {
+            return new()
+            {
+                Id = rand.Next(100),
+                UserName = Guid.NewGuid().ToString(),
+                Email = Guid.NewGuid().ToString(),
+                Role = ShopApi.Entity.Role.User,
+                Password = Guid.NewGuid().ToString()
             };
         }
     }

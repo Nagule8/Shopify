@@ -75,7 +75,7 @@ namespace ShopApi_Tests
             Assert.IsType<OkObjectResult>(result);
         }
 
-        //Get mtching categories test
+        //Get matching categories test
         [Fact]
         public async Task GetCategories_WithMatchingCategories_ReturnsMatchingCategories()
         {
@@ -110,6 +110,34 @@ namespace ShopApi_Tests
             var result = await controller.PostCategory(It.IsAny<Category>());
             //Assert
             Assert.IsType<ActionResult<Category>>(result);
+        }
+
+        //Create category test
+        [Fact]
+        public async Task Creatcategory_WithoutcategoryToCreate_ReturnBadRequest()
+        {
+            //Arrange
+            var controller = new CategoriesController(commonRepositoryStub.Object, categoryRepositoryStub.Object);
+
+            //Act
+            var result = await controller.PostCategory((Category)null);
+
+            //Assert
+            result.Result.Should().BeOfType<BadRequestResult>();
+        }
+
+        //Create category test
+        [Fact]
+        public async Task Creatcategory_WithoutcategoryToCreate_ReturnBadRequestModelState()
+        {
+            //Arrange
+            var controller = new CategoriesController(commonRepositoryStub.Object, categoryRepositoryStub.Object);
+
+            //Act
+            var result = await controller.PostCategory(It.IsAny<Category>());
+
+            //Assert
+            result.Result.Should().BeOfType<BadRequestResult>();
         }
 
         //Update category test
@@ -148,6 +176,23 @@ namespace ShopApi_Tests
 
             //Assert
             Assert.IsType<ActionResult<Category>>(result);
+        }
+
+        //Delete cateogry test
+        [Fact]
+        public async Task DeleteCartItem_WithExistingCartItem_ReturnsNotFoundObjectResult()
+        {
+            //Arrange
+            Category existingCategory = RandomCategory();
+            commonRepositoryStub.Setup(repo => repo.GetSpecific(It.IsAny<int>())).ReturnsAsync((Category)null);
+
+            var controller = new CategoriesController(commonRepositoryStub.Object, categoryRepositoryStub.Object);
+
+            //Act
+            var result = await controller.DeleteCategory(existingCategory.Id);
+
+            //Assert
+            result.Result.Should().BeOfType<NotFoundObjectResult>();
         }
 
         private Category RandomCategory()

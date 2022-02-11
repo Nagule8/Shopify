@@ -265,3 +265,4 @@ C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\ShopApi\ShopA
 C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\ShopApi\ShopApi-Tests\obj\Debug\net5.0\ShopApi-Tests.genruntimeconfig.cache
 C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\ShopApi\ShopApi-Tests\bin\Debug\net5.0\FluentAssertions.dll
 C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\ShopApi\ShopApi-Tests\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.InMemory.dll
+C:\Nagul\OneDrive - CES Limited\Documents\Training_Projects\WebAPI\ShopApi\ShopApi-Tests\bin\Debug\net5.0\HttpContextMoq.dll

@@ -35,6 +35,7 @@
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
     <PackageReference Include="bootstrap" Version="3.4.1" />
+    <PackageReference Include="HttpContextMoq" Version="1.2.1" />
     <PackageReference Include="jQuery" Version="3.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.12" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
